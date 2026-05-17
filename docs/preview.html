@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uimahyppyjen tekniikka ja mekaniikka – lisälähteet</title>
+  <style>
+    :root {
+      --bg: #07131f;
+      --bg-soft: #0d2033;
+      --card: rgba(255, 255, 255, 0.075);
+      --card-strong: rgba(255, 255, 255, 0.12);
+      --text: #eef7ff;
+      --muted: #b7cadb;
+      --muted-2: #8eabbf;
+      --accent: #78d8ff;
+      --accent-2: #a6ffcb;
+      --warning: #ffd37a;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(120, 216, 255, 0.22), transparent 34rem),
+        radial-gradient(circle at top right, rgba(166, 255, 203, 0.14), transparent 30rem),
+        linear-gradient(145deg, var(--bg), #03101b 62%, #061928);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.78), transparent 72%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(var(--max-width), calc(100% - 36px));
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr;
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    .hero-main,
+    .panel,
+    .source-card {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.055));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-main {
+      padding: 38px;
+      border-radius: calc(var(--radius) + 10px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -120px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(120, 216, 255, 0.28), transparent 68%);
+      z-index: -1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      color: var(--accent-2);
+      font-size: 0.82rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0 14px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 22px var(--accent-2);
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 900px;
+      font-size: clamp(2.05rem, 4vw, 4.7rem);
+      line-height: 0.97;
+      letter-spacing: -0.055em;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      padding: 22px;
+    }
+
+    .panel h2,
+    .category h2 {
+      margin: 0 0 12px;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .root-input {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px 14px;
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .root-input:focus {
+      border-color: rgba(120, 216, 255, 0.72);
+      box-shadow: 0 0 0 4px rgba(120, 216, 255, 0.12);
+    }
+
+    .hint {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted-2);
+      font-size: 0.82rem;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 24px 0 32px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.13);
+      background: rgba(7, 19, 31, 0.76);
+      backdrop-filter: blur(18px);
+      border-radius: 20px;
+      box-shadow: 0 18px 36px rgba(0,0,0,0.22);
+    }
+
+    .toolbar-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .search {
+      width: 100%;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 14px;
+      outline: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.1);
+      font-size: 0.96rem;
+    }
+
+    .search::placeholder {
+      color: rgba(238,247,255,0.52);
+    }
+
+    .jump-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .chip,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .chip {
+      padding: 8px 11px;
+      font-size: 0.82rem;
+      font-weight: 650;
+    }
+
+    .chip:hover,
+    .source-card:hover {
+      border-color: rgba(120, 216, 255, 0.5);
+    }
+
+    .category {
+      margin-top: 38px;
+      scroll-margin-top: 100px;
+    }
+
+    .category-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .category-note {
+      color: var(--muted-2);
+      font-size: 0.92rem;
+      margin: 0;
+      max-width: 620px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .source-card {
+      min-height: 100%;
+      border-radius: var(--radius);
+      padding: 22px;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .source-card:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.145), rgba(255,255,255,0.07));
+    }
+
+    .source-title {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      padding: 5px 9px;
+      font-size: 0.75rem;
+      color: rgba(238,247,255,0.78);
+    }
+
+    .tag.year {
+      color: #07131f;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      font-weight: 800;
+    }
+
+    .summary {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .file-name {
+      display: block;
+      margin: 0 0 14px;
+      padding: 10px 11px;
+      overflow-wrap: anywhere;
+      border: 1px dashed rgba(255,255,255,0.19);
+      border-radius: 13px;
+      color: rgba(238,247,255,0.7);
+      background: rgba(0, 0, 0, 0.14);
+      font-size: 0.78rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 750;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .button.primary {
+      color: #04121d;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .button.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .button:hover {
+      filter: brightness(1.08);
+    }
+
+    .empty-state {
+      display: none;
+      margin: 28px 0;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      margin-top: 42px;
+      color: var(--muted-2);
+      font-size: 0.88rem;
+    }
+
+    code {
+      color: #d8faff;
+      background: rgba(0,0,0,0.25);
+      border-radius: 7px;
+      padding: 0.14em 0.35em;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .toolbar-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .jump-links {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 24px, var(--max-width));
+        padding-top: 24px;
+      }
+
+      .hero-main,
+      .panel,
+      .source-card {
+        padding: 20px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .category-head {
+        display: block;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        color: #111;
+      }
+
+      .toolbar,
+      .root-input,
+      .hint,
+      .button.secondary {
+        display: none;
+      }
+
+      .hero-main,
+      .panel,
+      .source-card {
+        box-shadow: none;
+        background: #fff;
+        border-color: #ddd;
+      }
+
+      .summary,
+      .lead,
+      .panel p,
+      .category-note,
+      .file-name,
+      footer {
+        color: #333;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero" aria-label="Sivun otsikko ja asetukset">
+      <div class="hero-main">
+        <p class="eyebrow">Open access PDF -sisällysluettelo</p>
+        <h1>Uimahyppyjen tekniikka ja mekaniikka – lisälähteet</h1>
+        <p class="lead">
+          Tämä HTML-sivu toimii sisällysluettelona kansioon tallennetuille PDF-tiedostoille.
+          Paikallinen linkki muodostetaan automaattisesti muuttujasta <code>FOLDER_ROOT</code>
+          ja tiedostonimestä, joka noudattaa kaavaa <code>otsikko_(yyyy).pdf</code>.
+        </p>
+      </div>
+
+      <div class="hero-side">
+        <div class="panel">
+          <h2>Kansion juuri</h2>
+          <p>Muuta JavaScriptin alussa olevaa <code>FOLDER_ROOT</code>-muuttujaa tai kirjoita juuri tähän kenttään.</p>
+          <input id="folderRoot" class="root-input" type="text" spellcheck="false" />
+          <span class="hint">Esim. <code>./pdf/</code>, <code>C:\Users\Lauri\Documents\uimahypyt\</code> tai <code>file:///C:/Users/Lauri/Documents/uimahypyt/</code></span>
+        </div>
+        <div class="panel">
+          <h2 id="sourceCount">22 lähdettä</h2>
+          <p>Jokaisessa kortissa on paikallinen PDF-linkki, verkkolähde ja odotettu tiedostonimi.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="toolbar" aria-label="Hakutyökalut ja pikalinkit">
+      <div class="toolbar-inner">
+        <input id="search" class="search" type="search" placeholder="Hae otsikosta, vuodesta, aiheesta tai kuvauksesta…" />
+        <div id="jumpLinks" class="jump-links"></div>
+      </div>
+    </nav>
+
+    <div id="content"></div>
+    <div id="emptyState" class="empty-state">Hakusanalla ei löytynyt lähteitä.</div>
+
+    <footer>
+      Vinkki: jos selain ei avaa Windows-polkuja suoraan, käytä muotoa <code>file:///C:/polku/kansioon/</code>
+      tai sijoita tämä HTML-tiedosto samaan pääkansioon PDF-kansion kanssa ja käytä suhteellista polkua <code>./pdf/</code>.
+    </footer>
+  </main>
+
+  <script>
+    // Muuta vain tämä, jos haluat pysyvän oletuspolun.
+    let FOLDER_ROOT = "./pdf/";
+
+    const sources = [
+  {
+    "title": "A New Model of the Springboard in Diving",
+    "year": 2004,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["springboard", "mallinnus", "laudan mekaniikka"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/1282/1204",
+    "summary": "Tutkimus esittelee mallin, joka kuvaa ponnahduslaudan vertikaalista, horisontaalista ja rotaatioliikettä sekä yhdistää laudan mallin hyppääjän simulaatioon."
+  },
+  {
+    "title": "Computer Simulation of the Takeoff in Springboard Diving",
+    "year": 2005,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["väitöskirja", "takeoff", "simulaatio"],
+    "url": "https://repository.lboro.ac.uk/ndownloader/files/17255735/1",
+    "summary": "Laaja Loughborough-väitöskirja, jossa kehitetään hyppääjän ja ponnahduslaudan simulaatiomalli ponnistustekniikan analysointiin."
+  },
+  {
+    "title": "Variability and Control in Springboard Diving",
+    "year": 2017,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["väitöskirja", "kontrolli", "vaihtelu"],
+    "url": "https://repository.lboro.ac.uk/ndownloader/files/17251793/1",
+    "summary": "Tutkii eliittihyppääjien liikkeen vaihtelua ja hallintaa: miten korkeus, rotaatio, etäisyys ja korjaukset rakentuvat ponnistuksessa ja ilmavaiheessa."
+  },
+  {
+    "title": "Factors Influencing Variation in Dive Height in 1m Springboard Diving",
+    "year": 2016,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["1m", "korkeus", "ponnistus"],
+    "url": "https://scispace.com/pdf/factors-influencing-variation-in-dive-height-in-1m-36uwdky225.pdf",
+    "summary": "Konferenssipaperi siitä, mitkä ponnistus- ja kontaktivaiheen tekijät selittävät vaihtelua 1 metrin ponnahduslautahypyn korkeudessa."
+  },
+  {
+    "title": "Characterization of the Dynamic Behavior of a Diving Board Using Motion Capture Data",
+    "year": 2022,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["motion capture", "dynaaminen malli", "lauta"],
+    "url": "https://inria.hal.science/hal-03788858/document",
+    "summary": "Tekninen artikkeli ponnahduslaudan dynaamisesta käyttäytymisestä, liikkeenkaappausdatasta ja mallinnuksesta."
+  },
+  {
+    "title": "Training with Fast Feedback on a Measuring Unit in Springboard Diving",
+    "year": 2005,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["palaute", "mittaus", "motorinen oppiminen"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/1127",
+    "summary": "Tutkii, miten mittalaitteella tuotettu nopea visuaalinen palaute voi tukea ponnahduslautatekniikan oppimista."
+  },
+  {
+    "title": "Development of a Complex Measuring Unit for Springboard Diving",
+    "year": 2004,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["mittauslaite", "voima-alusta", "laudan kallistuma"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/issue/view/ISBS2004",
+    "summary": "Esittelee ponnahduslautaan yhdistetyn mittausjärjestelmän, jolla voidaan mitata esimerkiksi voimia ja laudan kallistumaa."
+  },
+  {
+    "title": "Movement Control in Springboard Diving",
+    "year": 1993,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["väitöskirja", "liikkeen hallinta", "videoanalyysi"],
+    "url": "https://era.ed.ac.uk/bitstream/handle/1842/6962/540169.pdf?sequence=3",
+    "summary": "Dennis Rewtin väitöskirja liikkeen hallinnasta ponnahduslautahypyissä; hyödyllinen vanhempi lähde biomekaniikan ja havainto-ohjauksen näkökulmiin."
+  },
+  {
+    "title": "Do the Kinematics of a Baulked Take-Off in Springboard Diving Differ from Those of a Completed Dive",
+    "year": 2013,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["baulked take-off", "kinematiikka", "vertailu"],
+    "url": "https://core.ac.uk/download/pdf/19542382.pdf",
+    "summary": "Vertaa keskeytettyä ponnistusta ja loppuun vietyä hyppyä, mikä auttaa hahmottamaan päätöksenteon ja korjaamisen biomekaniikkaa."
+  },
+  {
+    "title": "An Examination of Learning Design in Elite Springboard Diving",
+    "year": 2013,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["väitöskirja", "harjoittelun suunnittelu", "edustavuus"],
+    "url": "https://eprints.qut.edu.au/63807/1/Coralie_Barris_Thesis.pdf",
+    "summary": "Väitöskirja eliittiponnahduslautahyppääjien harjoittelun suunnittelusta, kuivaharjoittelun edustavuudesta ja harjoitusympäristöjen suhteesta altaalla tehtäviin hyppyihin."
+  },
+  {
+    "title": "Preparation with a Somersault Simulator for Learning a New Task with Young Divers",
+    "year": 2004,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["simulaattori", "nuoret hyppääjät", "transfer"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/1390/1408",
+    "summary": "Arvioi voltteja harjoittavan simulaattorin käyttöä nuorilla hyppääjillä uuden tehtävän oppimisessa ja veteentulon valmistelussa."
+  },
+  {
+    "title": "Variability and the Control of Rotation During Springboard Diving",
+    "year": 2014,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["rotaatio", "vaihtelu", "kontrolli"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/issue/view/ISBS2014",
+    "summary": "Käsittelee rotaation hallintaa ja vaihtelua useamman voltin ponnahduslautahypyissä."
+  },
+  {
+    "title": "A Comparison of Multiple Forward Somersault Dives from the 3m Springboard A Case Study",
+    "year": 2014,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["3m", "eteenvoltit", "tapaustutkimus"],
+    "url": "https://scispace.com/pdf/a-comparison-of-multiple-forward-somersault-dives-from-the-3k90atgu80.pdf",
+    "summary": "Tapaustutkimus, joka vertailee useita eteenpäin suuntautuvia monivolttihyppyjä 3 metrin ponnahduslaudalta."
+  },
+  {
+    "title": "The Biomechanics of Twisting Somersaults Part III Aerial Twist",
+    "year": 1993,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["aerial twist", "kierre", "Yeadon"],
+    "url": "https://repository.lboro.ac.uk/articles/journal_contribution/The_biomechanics_of_twisting_somersaults_Part_III_aerial_twist/9620195/1/files/17267918.pdf",
+    "summary": "Täydentää Yeadonin kierteisiä voltteja käsittelevää sarjaa ja keskittyy ilmassa aloitettuun kierteeseen."
+  },
+  {
+    "title": "The Biomechanics of Twisting Somersaults Part IV Partitioning Performances Using the Tilt Angle",
+    "year": 1993,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["tilt angle", "contact twist", "aerial twist"],
+    "url": "https://repository.lboro.ac.uk/articles/journal_contribution/The_biomechanics_of_twisting_somersaults_Part_IV_partitioning_performances_using_the_tilt_angle/9627698/1/files/17276459.pdf",
+    "summary": "Esittelee tavan erottaa kontaktissa tuotetun ja ilmassa tuotetun kierteen osuuksia kallistuskulman perusteella."
+  },
+  {
+    "title": "The Limits of Aerial Techniques for Producing Twist in Forward 1.5 Somersault Dives",
+    "year": 2018,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["twist limits", "simulaatio", "1.5 somersault"],
+    "url": "https://figshare.com/articles/journal_contribution/The_limits_of_aerial_techniques_for_producing_twist_in_forward_1_somersault_dives/9611402/1/files/17258561.pdf",
+    "summary": "Simulaatiotutkimus, jossa arvioidaan, kuinka paljon kierrettä voidaan tuottaa eteenpäin suuntautuvassa 1,5 voltin hypyssä pelkillä ilmavaiheen tekniikoilla."
+  },
+  {
+    "title": "Twisting Techniques Used by Competitive Divers",
+    "year": 1993,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["kilpahyppääjät", "kierretekniikat", "Yeadon"],
+    "url": "https://www.tandfonline.com/doi/pdf/10.1080/02640419308730003",
+    "summary": "Analysoi kilpailu-uimahyppääjien käyttämiä kierteen tuottamisen tekniikoita ja erottelee esimerkiksi kontaktissa sekä ilmassa syntyviä vaikutuksia."
+  },
+  {
+    "title": "In Search of the Awesome Rip in Platform Diving Entries",
+    "year": 2005,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["rip entry", "splash", "platform"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/1126/1015",
+    "summary": "Käsittelee onnistuneen rip-entryn piirteitä, roiskeen syntyä ja niitä veteentulon laatutekijöitä, joilla splash pysyy pienenä."
+  },
+  {
+    "title": "Analysing Splash in Competitive Diving",
+    "year": 2014,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["splash", "kuvankäsittely", "arviointi"],
+    "url": "https://shura.shu.ac.uk/8186/1/Driscoll_analysing_splash.pdf",
+    "summary": "Tutkii kilpailu-uimahyppyjen roiskeen määrällistä analysointia kuvankäsittelyn avulla ja yhdistää splashin arviointiin."
+  },
+  {
+    "title": "Dynamically Deforming Single Jointed Diver Models Reduce Pinch off Depth",
+    "year": 2025,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["fluidimekaniikka", "cavity", "rip entry"],
+    "url": "https://hal.science/hal-04876578v1/file/Splash_Paper%20%281%29.pdf",
+    "summary": "Tuore fluidimekaniikan mallinnuslähde, jossa tarkastellaan muotoaan muuttavan yksinivelisen hyppääjämallin vaikutusta veteentulon kuplan ja pinch-off-syvyyden muodostumiseen."
+  },
+  {
+    "title": "The Hydrodynamics of High Diving",
+    "year": 2020,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["high diving", "hydrodynamiikka", "air cavity"],
+    "url": "https://pdfs.semanticscholar.org/1b67/9186ff460e342cca0ec31ee4d48bed1df2a9.pdf",
+    "summary": "Korkeushyppyjen hydrodynamiikkaa käsittelevä artikkeli; hyödyllinen erityisesti suurella nopeudella tapahtuvan veteentulon ja ilmataskun syntymisen ymmärtämiseen."
+  },
+  {
+    "title": "Diving Literature Complete Springboard Diving Platform Diving High Diving",
+    "year": 2026,
+    "category": "Hakemisto ja jatkohaku",
+    "tags": ["bibliografia", "jatkohaku", "kirjallisuus"],
+    "url": "https://europeanaquatics.org/wp-content/uploads/2026/02/2026-Diving-literature-complete-for-EA.pdf",
+    "summary": "Laaja kirjallisuusluettelo, jota voi käyttää karttana uusien biomekaniikka-, tekniikka-, valmennus- ja veteentulolähteiden etsimiseen."
+  },
+  {
+    "title": "The Science and Engineering behind Springboard Diving",
+    "year": 2021,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["springboard", "kineettinen energia", "fysiikka"],
+    "url": "https://www.cambridgediving.org.uk/wp-content/uploads/2021/06/Science-behind-diving.pdf",
+    "summary": "Tämä artikkeli tarjoaa yleiskatsauksen ponnahduslaudan fysiikkaan. Se käsittelee laudan kineettisen energian varastointia ja sitä, miten hyppääjä käyttää laudan joustavuutta hyväkseen saavuttaakseen hypylle maksimaalisen korkeuden."
+  },
+  {
+    "title": "The Effect of Springboard Fulcrum Position on the Kinematics of Junior Divers",
+    "year": 2011,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["fulcrum", "kinematiikka", "säätörulla"],
+    "url": "https://isbweb.org/images/conf/2011/ScientificProgram/ISB2011_ScientificProgram_files/794.pdf",
+    "summary": "Tutkimus keskittyy ponnahduslaudan säätörullan (fulcrum) asennon vaikutuksiin. Se analysoi, miten säädöt muuttavat laudan taipumaa, hyppääjän nivelkulmia ja itse hypyn kinematiikkaa."
+  },
+  {
+    "title": "Splashing Physics of Springboard Diving",
+    "year": 2021,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["fysiikka", "rotaatio", "splash"],
+    "url": "https://pure.uva.nl/ws/files/218263158/pedad9fcbsupp5.pdf",
+    "summary": "Syväsukellus uimahyppyjen mekaniikkaan, joka kattaa pyörimisliikkeen perusteet ja hitausmomentit. Se havainnollistaa, miten hyppääjän asennon muutokset ilmalennon aikana vaikuttavat rotaationopeuteen."
+  },
+  {
+    "title": "A Mathematical Model for the Take-Off in Platform Diving",
+    "year": 2016,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["kerroshypyt", "matemaattinen malli", "ponnistus"],
+    "url": "https://jhk.termedia.pl/pdf-158649-84912?filename=84912.pdf",
+    "summary": "Tämä tutkimus mallintaa matemaattisesti kerroshyppyjen ponnistusvaihetta. Se tutkii massakeskipisteen, voimantuoton ja kulmaliikemäärän välistä optimaalista suhdetta riittävän korkeuden ja rotaation saavuttamiseksi."
+  },
+  {
+    "title": "Principles of the Splash Control Technique in Diving",
+    "year": 1999,
+    "category": "Veteentulo, splash/rip ja hydrodynamiikka",
+    "tags": ["rip entry", "splash control", "veteentulo"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/2194/2050",
+    "summary": "Asiakirja analysoi roiskeettoman veteenmenon (rip entry) fysiikkaa. Se selittää, miten käsien ja hartioiden oikeanlainen asento luo veteen paineaallon, joka vetää roiskeet pinnan alle."
+  },
+  {
+    "title": "The Biomechanics of Twisting Somersaults Part I Rigid body motions",
+    "year": 1993,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["kierre", "rigid body", "Yeadon"],
+    "url": "https://repository.lboro.ac.uk/articles/The_biomechanics_of_twisting_somersaults_Part_I_rigid_body_motions/9617219/files/17264894.pdf",
+    "summary": "Matemaattinen ja jäykän kappaleen dynamiikkaan perustuva analyysi kierteisistä volteista ilmalennon aikana. Se osoittaa hitaustensoreiden avulla, kuinka kierre voidaan aloittaa ilmassa pelkkää vartalon asentoa muuttamalla kulmaliikemäärän säilyessä vakiona."
+  },
+  {
+    "title": "The Biomechanics of Twisting Somersaults Part II Contact twist",
+    "year": 1993,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["contact twist", "kierre", "ponnistus"],
+    "url": "https://repository.lboro.ac.uk/articles/journal_contribution/The_biomechanics_of_twisting_somersaults_Part_II_contact_twist/9624797/1/files/17273405.pdf",
+    "summary": "Ensimmäisen osan jatkotutkimus, joka keskittyy kierteisiin, jotka aloitetaan jo ponnistusvaiheessa lautakontaktin aikana. Se analysoi, kuinka rintakehän ja käsien asymmetriset liikkeet luovat tarvittavan vääntömomentin."
+  },
+  {
+    "title": "A Kinematic Analysis of the Backward 2.5 Somersaults with 1.5 Twists Dive 5253B",
+    "year": 2012,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["5253B", "kinematiikka", "kierrehyppy"],
+    "url": "https://ojs.ub.uni-konstanz.de/cpa/article/view/6503/5870",
+    "summary": "Käytännönläheinen ja erittäin yksityiskohtainen liikeanalyysi vaativasta taaksepäin suuntautuvasta kierrehypystä. Tutkimus purkaa osiin ne nivelkulmien ja asentojen muutokset, joiden avulla kierre puretaan ja veteenmeno valmistellaan."
+  },
+  {
+    "title": "Kinematic Determinants of Dive Height in Springboard Diving",
+    "year": 2012,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["korkeus", "kinematiikka", "vauhdinotto"],
+    "url": "https://www.mov-sport-sciences.org/articles/sm/pdf/2012/01/sm110062.pdf",
+    "summary": "Analysoi eteenpäin suuntautuvien hyppyjen vauhdinoton ja ponnistuksen mekaniikkaa. Keskittyy erityisesti siihen, miten kehon liike-energia siirretään tehokkaimmin alumiinilautaan korkeuden maksimoimiseksi."
+  },
+  {
+    "title": "Parameter Determination for a Computer Simulation Model of a Diver and a Springboard",
+    "year": 1999,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["simulaatio", "wobbling mass", "malli"],
+    "url": "https://scispace.com/pdf/parameter-determination-for-a-computer-simulation-model-of-a-2i3c5mvuhk.pdf",
+    "summary": "Esittelee kaksiulotteisen tietokonesimulaation hyppääjän ja laudan vuorovaikutuksesta. Malli huomioi pehmytkudosten liikkeen ja kalibroi simulaatiota oikeilla suurnopeuskameroilla mitatuilla hyppykoordinaateilla."
+  },
+  {
+    "title": "Simulation of Human Diving Hodgins",
+    "year": 1995,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["simulaatio", "rigid body", "kontrollialgoritmi"],
+    "url": "https://graphicsinterface.org/wp-content/uploads/gi1995-1.pdf",
+    "summary": "Käsittelee uimahyppyjen mallintamista monimutkaisella 32 vapausasteen jäykän kappaleen mallilla. Tutkii dynamiikan ja kontrollialgoritmien käyttöä oikean voltti- ja kierremäärän saavuttamiseksi pelkillä sisäisillä nivelväännöillä."
+  },
+  {
+    "title": "Do Springboard Divers Violate Angular Momentum Conservation Cliff Frohlich",
+    "year": 1979,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["kulmaliikemäärä", "fysiikka", "Frohlich"],
+    "url": "https://pubs.aip.org/aapt/ajp/article-pdf/47/7/583/12006322/583_1_online.pdf",
+    "summary": "Tunnettu klassikkoartikkeli, joka selittää Eulerin liikeyhtälöiden kautta, miksi uimahyppääjän ilmassa aloittama kierre ei riko fysiikan lakeja. Se avaa asymmetristen liikkeiden vaikutusta hitaustensoreihin."
+  },
+  {
+    "title": "The Physics of Somersaulting and Twisting",
+    "year": 1990,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["fysiikka", "somersault", "twisting"],
+    "url": "https://www.physics.utoronto.ca/~phy189h1/Physics%20of%20Somersaults%20and%20Twists.pdf",
+    "summary": "Hieman yleistajuisempi katsaus volttien ja kierteiden fysiikkaan. Havainnollistaa selkeästi hitausmomenttien merkitystä ja sitä, miten asennon tiukentaminen vaikuttaa pyörimisnopeuteen ja akseleihin."
+  },
+  {
+    "title": "Adjustment in the flight phase of 1m springboard forward pike dives",
+    "year": 2011,
+    "category": "Ilmavaihe, rotaatio ja kierteet",
+    "tags": ["ilmalento", "korjaus", "taite"],
+    "url": "https://commons.nmu.edu/cgi/viewcontent.cgi?article=1025&context=isbs",
+    "summary": "Tutkimus hyppääjän kyvystä korjata asentoaan kesken ilmalennon. Se analysoi, miten ponnistusvirheitä kompensoidaan muuttamalla lonkan ja käsivarsien kulmia taitteesta avautumisen yhteydessä."
+  },
+  {
+    "title": "Adjustment in the takeoff phase of 1-m springboard forward dives",
+    "year": 2011,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["takeoff", "hienosäätö", "ponnistus"],
+    "url": "https://commons.nmu.edu/cgi/viewcontent.cgi?article=1417&context=isbs",
+    "summary": "Keskittyy hienosäätöön, jota hyppääjä tekee vielä ollessaan kontaktissa lautaan. Analysoi nivelkulmien sekunnin murto-osien säätöjä laudan painumis- ja palautumisvaiheissa tasapainon ja rotaation varmistamiseksi."
+  },
+  {
+    "title": "Kinematic analysis of diving back pike somersault in platform according to players skill level",
+    "year": 2010,
+    "category": "Ponnahduslauta, ponnistus ja simulointi",
+    "tags": ["kerroshypyt", "kinematiikka", "taite"],
+    "url": "https://commons.nmu.edu/cgi/viewcontent.cgi?article=1283&context=isbs",
+    "summary": "Vertailee eri taitotasolla olevien hyppääjien kinematiikkaa kerroksilta tehtävissä taaksepäin taite -hypyissä. Painottaa lonkan ja polven ojennusnopeuksien merkitystä onnistuneessa ponnistuksessa."
+  },
+  {
+    "title": "Representative learning design in springboard diving Is dry-land training representative of a pool dive",
+    "year": 2014,
+    "category": "Mittaus, palaute ja oppiminen",
+    "tags": ["kuivaharjoittelu", "edustavuus", "oppiminen"],
+    "url": "https://www.aut.ac.nz/__data/assets/pdf_file/0008/380699/Representative-learning-design-in-springboard-diving-Is-dry-land-training-representative-of-a-pool-dive.pdf",
+    "summary": "Biomekaaninen vertailu kuivaharjoittelun (kuten trampoliinin) ja altaalla tehtävien hyppyjen välillä. Auttaa ymmärtämään, miten jaloilleen alastulo verrattuna veteenmenoon muuttaa kehon ennakoivaa koordinaatiota ja liikeratoja."
+  }
+];
+
+    const categoryNotes = {
+      "Ponnahduslauta, ponnistus ja simulointi": "Laudan liike, ponnistuksen simulaatio, korkeuden tuotto ja hyppääjän–laudan vuorovaikutus.",
+      "Mittaus, palaute ja oppiminen": "Mittalaitteet, nopea palaute, liikkeen hallinta, harjoittelun suunnittelu ja oppimisen edustavuus.",
+      "Ilmavaihe, rotaatio ja kierteet": "Voltit, kierteet, kontaktikierre, ilmassa syntyvä kierre ja rotaation hallinta.",
+      "Veteentulo, splash/rip ja hydrodynamiikka": "Rip-entry, roiskeen mittaaminen, ilmatasku, cavity ja veteentulon hydrodynamiikka.",
+      "Hakemisto ja jatkohaku": "Laajemmat bibliografiat ja apulähteet uusien PDF:ien löytämiseen."
+    };
+
+    const content = document.querySelector("#content");
+    const emptyState = document.querySelector("#emptyState");
+    const search = document.querySelector("#search");
+    const rootInput = document.querySelector("#folderRoot");
+    const jumpLinks = document.querySelector("#jumpLinks");
+    const sourceCount = document.querySelector("#sourceCount");
+
+    function slugifyTitle(title) {
+      return title
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/&/g, " and ")
+        .replace(/[“”]/g, "")
+        .replace(/[’']/g, "")
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function fileNameFor(source) {
+      return `${slugifyTitle(source.title)}_(${source.year}).pdf`;
+    }
+
+    function normalizeFolderRoot(root) {
+      let r = String(root || "").trim();
+      if (!r) return "./";
+      if (/^[a-zA-Z]:[\\/]/.test(r)) {
+        r = "file:///" + r.replace(/\\/g, "/");
+      }
+      r = r.replace(/\\/g, "/");
+      if (!r.endsWith("/")) r += "/";
+      return r;
+    }
+
+    function localHref(source) {
+      const root = normalizeFolderRoot(FOLDER_ROOT);
+      return encodeURI(root + fileNameFor(source));
+    }
+
+    function categoryId(category) {
+      return slugifyTitle(category);
+    }
+
+    function groupByCategory(items) {
+      return items.reduce((groups, item) => {
+        groups[item.category] = groups[item.category] || [];
+        groups[item.category].push(item);
+        return groups;
+      }, {});
+    }
+
+    function sourceMatches(source, query) {
+      const haystack = [source.title, source.year, source.category, source.summary, ...source.tags].join(" ").toLowerCase();
+      return haystack.includes(query.toLowerCase());
+    }
+
+    function renderJumpLinks(categories) {
+      jumpLinks.innerHTML = categories
+        .map(category => `<a class="chip" href="#${categoryId(category)}">${category}</a>`)
+        .join("");
+    }
+
+    function render() {
+      const query = search.value.trim();
+      const filtered = query ? sources.filter(source => sourceMatches(source, query)) : sources;
+      const groups = groupByCategory(filtered);
+      const categories = Object.keys(groups);
+
+      sourceCount.textContent = `${sources.length} lähdettä`;
+      renderJumpLinks(Object.keys(groupByCategory(sources)));
+      emptyState.style.display = filtered.length ? "none" : "block";
+
+      content.innerHTML = categories.map(category => {
+        const cards = groups[category].map(source => {
+          const fileName = fileNameFor(source);
+          const tagHtml = source.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+
+          return `
+            <article class="source-card">
+              <h3 class="source-title">${source.title}</h3>
+              <div class="meta-row">
+                <span class="tag year">${source.year}</span>
+                ${tagHtml}
+              </div>
+              <p class="summary">${source.summary}</p>
+              <code class="file-name">${fileName}</code>
+              <div class="actions">
+                <a class="button primary" href="${localHref(source)}">Avaa tallennettu PDF</a>
+                <a class="button secondary" href="${source.url}" target="_blank" rel="noopener noreferrer">Verkkolähde</a>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        return `
+          <section id="${categoryId(category)}" class="category">
+            <div class="category-head">
+              <div>
+                <h2>${category}</h2>
+                <p class="category-note">${categoryNotes[category] || ""}</p>
+              </div>
+              <span class="chip">${groups[category].length} lähdettä</span>
+            </div>
+            <div class="cards">${cards}</div>
+          </section>
+        `;
+      }).join("");
+    }
+
+    const savedRoot = localStorage.getItem("divingSourcesFolderRoot");
+    if (savedRoot) FOLDER_ROOT = savedRoot;
+    rootInput.value = FOLDER_ROOT;
+
+    rootInput.addEventListener("input", event => {
+      FOLDER_ROOT = event.target.value;
+      localStorage.setItem("divingSourcesFolderRoot", FOLDER_ROOT);
+      render();
+    });
+
+    search.addEventListener("input", render);
+    render();
+  </script>
+</body>
+</html>
