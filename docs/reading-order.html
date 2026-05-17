@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lukujärjestys – Uimahyppyjen tekniikka ja mekaniikka</title>
+  <meta name="description" content="Ehdotettu lukujärjestys uimahyppyjen tekniikkaa, mekaniikkaa ja biomekaniikkaa käsitteleville PDF-lähteille." />
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0e2136;
+      --surface: rgba(255, 255, 255, 0.075);
+      --surface-strong: rgba(255, 255, 255, 0.12);
+      --text: #eef7ff;
+      --muted: #b9c9db;
+      --subtle: rgba(238, 247, 255, 0.68);
+      --accent: #74d6ff;
+      --accent-2: #9ef0c4;
+      --warning: #ffd37a;
+      --border: rgba(255, 255, 255, 0.15);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.26);
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(116, 214, 255, 0.2), transparent 33rem),
+        radial-gradient(circle at bottom right, rgba(158, 240, 196, 0.16), transparent 34rem),
+        linear-gradient(135deg, var(--bg), #071a2b 55%, #050d17);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill,
+    .small-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 750;
+    }
+
+    .small-link:hover,
+    .small-link:focus-visible {
+      border-color: rgba(116, 214, 255, 0.55);
+      outline: none;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.75fr);
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    .hero-main,
+    .hero-side,
+    .stage,
+    .notice {
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, var(--surface), rgba(255, 255, 255, 0.045));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-main {
+      border-radius: var(--radius);
+      padding: clamp(28px, 5vw, 56px);
+    }
+
+    .hero-side {
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin: 0 0 18px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(158, 240, 196, 0.22);
+      background: rgba(158, 240, 196, 0.1);
+      color: var(--accent-2);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.35rem, 6vw, 4.8rem);
+      line-height: 0.98;
+      letter-spacing: -0.065em;
+    }
+
+    .lead {
+      max-width: 780px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.03rem, 1.8vw, 1.25rem);
+      line-height: 1.7;
+    }
+
+    .hero-side h2 {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+    }
+
+    .hero-side p,
+    .notice {
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .stats {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .stat {
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.45rem;
+      color: var(--accent);
+    }
+
+    .toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 28px;
+    }
+
+    .stage {
+      margin: 24px 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .stage-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 26px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .stage-number {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(116, 214, 255, 0.22), rgba(158, 240, 196, 0.18));
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+
+    .stage h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.45rem, 3vw, 2.25rem);
+      letter-spacing: -0.04em;
+    }
+
+    .stage-description {
+      margin: 0;
+      max-width: 820px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .items {
+      display: grid;
+      gap: 0;
+    }
+
+    .reading-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      padding: 22px 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .reading-item:last-child {
+      border-bottom: none;
+    }
+
+    .reading-index {
+      display: grid;
+      place-items: center;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-2);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .item-content h3 {
+      margin: 0 0 8px;
+      font-size: 1.13rem;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 12px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--subtle);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .year {
+      color: #07111f;
+      background: var(--accent-2);
+      border-color: transparent;
+    }
+
+    .summary {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 13px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid var(--border);
+    }
+
+    .button.primary {
+      color: #06101b;
+      background: var(--accent);
+      border-color: transparent;
+    }
+
+    .button.secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.075);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      filter: brightness(1.04);
+    }
+
+    .notice {
+      display: none;
+      margin: 20px 0;
+      padding: 18px 20px;
+      border-radius: 18px;
+    }
+
+    .missing {
+      color: var(--warning);
+    }
+
+    code {
+      color: #d7f9ff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.14rem 0.36rem;
+      border-radius: 0.42rem;
+    }
+
+    footer {
+      margin-top: 34px;
+      color: rgba(238, 247, 255, 0.58);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stage-header,
+      .reading-item {
+        grid-template-columns: 1fr;
+      }
+
+      .stage-number,
+      .reading-index {
+        width: fit-content;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="topbar" aria-label="Päänavigaatio">
+      <a class="pill" href="./index.html">← Etusivu</a>
+      <div class="nav-links">
+        <a class="small-link" href="./preview.html">Preview</a>
+        <a class="small-link" href="./meta/sources.json">sources.json</a>
+      </div>
+    </nav>
+
+    <section class="hero" aria-label="Sivun esittely">
+      <div class="hero-main">
+        <p class="eyebrow">Ehdotettu etenemisjärjestys</p>
+        <h1>Lukujärjestys lähteiden läpikäyntiin</h1>
+        <p class="lead">
+          Tämä järjestys on rakennettu opiskelupoluksi: ensin yleiskuva, sitten ponnistus ja lauta,
+          sen jälkeen mallinnus, liikkeen hallinta, voltit ja kierteet, ja lopuksi veteentulo.
+        </p>
+      </div>
+
+      <aside class="hero-side">
+        <h2>Miten tätä kannattaa käyttää?</h2>
+        <p>
+          Lue jokaisesta osiosta ensin otsikot ja kuvaukset. Jos jokin osio tuntuu raskaalta,
+          siirry eteenpäin ja palaa myöhemmin. Tavoite ei ole lukea kaikkea yhdellä kertaa,
+          vaan rakentaa kokonaiskuva kerroksittain.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <strong id="sourceCount">–</strong>
+            <span>lähdettä JSON-tiedostossa</span>
+          </div>
+          <div class="stat">
+            <strong id="stageCount">–</strong>
+            <span>lukuvaihetta</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <div id="notice" class="notice"></div>
+    <nav id="toc" class="toc" aria-label="Lukujärjestyksen osiot"></nav>
+    <div id="content"></div>
+
+    <footer>
+      Uimahyppyjen tekniikka ja mekaniikka – lukujärjestys
+    </footer>
+  </main>
+
+  <script>
+    const SOURCES_URL = "./meta/sources.json";
+    const PDF_ROOT = "./pdf/";
+
+    const stages = [
+      {
+        id: "orientation",
+        title: "1. Aloita yleiskuvasta",
+        description: "Nämä lähteet auttavat muodostamaan kokonaiskuvan uimahyppyjen fysiikasta, keskeisistä käsitteistä ja siitä, millaisia aiheita koko lähdearkisto sisältää.",
+        titles: [
+          "Diving Literature Complete Springboard Diving Platform Diving High Diving",
+          "The Science and Engineering behind Springboard Diving",
+          "Splashing Physics of Springboard Diving",
+          "The Physics of Somersaulting and Twisting"
+        ]
+      },
+      {
+        id: "takeoff-board",
+        title: "2. Ponnistus ja ponnahduslaudan mekaniikka",
+        description: "Tässä vaiheessa kannattaa keskittyä siihen, miten vauhdinotto, laudan taipuma, fulcrum, ponnistus ja kehon liike-energia tuottavat korkeutta ja rotaatiota.",
+        titles: [
+          "Kinematic Determinants of Dive Height in Springboard Diving",
+          "The Effect of Springboard Fulcrum Position on the Kinematics of Junior Divers",
+          "A New Model of the Springboard in Diving",
+          "Characterization of the Dynamic Behavior of a Diving Board Using Motion Capture Data",
+          "Factors Influencing Variation in Dive Height in 1m Springboard Diving",
+          "Adjustment in the takeoff phase of 1-m springboard forward dives",
+          "A Mathematical Model for the Take-Off in Platform Diving",
+          "Kinematic analysis of diving back pike somersault in platform according to players skill level"
+        ]
+      },
+      {
+        id: "simulation-models",
+        title: "3. Simulaatiot ja matemaattiset mallit",
+        description: "Kun ponnistuksen perusmekaniikka on tuttu, nämä lähteet näyttävät, miten hyppääjän ja laudan vuorovaikutusta voidaan mallintaa tietokoneella.",
+        titles: [
+          "Parameter Determination for a Computer Simulation Model of a Diver and a Springboard",
+          "Computer Simulation of the Takeoff in Springboard Diving",
+          "Simulation of Human Diving Hodgins"
+        ]
+      },
+      {
+        id: "control-learning",
+        title: "4. Liikkeen hallinta, palaute ja oppiminen",
+        description: "Tämä osio yhdistää biomekaniikan valmennukseen: miten hyppääjä säätelee liikettä, miten vaihtelu näkyy suorituksessa ja miten harjoitteluympäristö vaikuttaa oppimiseen.",
+        titles: [
+          "Movement Control in Springboard Diving",
+          "Variability and Control in Springboard Diving",
+          "Variability and the Control of Rotation During Springboard Diving",
+          "Do the Kinematics of a Baulked Take-Off in Springboard Diving Differ from Those of a Completed Dive",
+          "Training with Fast Feedback on a Measuring Unit in Springboard Diving",
+          "Development of a Complex Measuring Unit for Springboard Diving",
+          "Representative learning design in springboard diving Is dry-land training representative of a pool dive",
+          "An Examination of Learning Design in Elite Springboard Diving",
+          "Preparation with a Somersault Simulator for Learning a New Task with Young Divers"
+        ]
+      },
+      {
+        id: "twist-rotation",
+        title: "5. Voltit, rotaatio ja kierteet",
+        description: "Tässä vaiheessa mennään syvemmälle kulmaliikemäärään, hitausmomenttiin, kontaktikierteeseen, ilmassa syntyvään kierteeseen ja yksittäisten hyppyjen kinematiikkaan.",
+        titles: [
+          "Do Springboard Divers Violate Angular Momentum Conservation Cliff Frohlich",
+          "The Biomechanics of Twisting Somersaults Part I Rigid body motions",
+          "The Biomechanics of Twisting Somersaults Part II Contact twist",
+          "The Biomechanics of Twisting Somersaults Part III Aerial Twist",
+          "The Biomechanics of Twisting Somersaults Part IV Partitioning Performances Using the Tilt Angle",
+          "Twisting Techniques Used by Competitive Divers",
+          "The Limits of Aerial Techniques for Producing Twist in Forward 1.5 Somersault Dives",
+          "A Kinematic Analysis of the Backward 2.5 Somersaults with 1.5 Twists Dive 5253B",
+          "Adjustment in the flight phase of 1m springboard forward pike dives",
+          "A Comparison of Multiple Forward Somersault Dives from the 3m Springboard A Case Study"
+        ]
+      },
+      {
+        id: "entry-splash",
+        title: "6. Veteentulo, splash ja hydrodynamiikka",
+        description: "Lopuksi kannattaa tarkastella, miten veteentulo, käsien ja kehon asento, roiske, cavity ja hydrodynamiikka liittyvät onnistuneeseen suoritukseen.",
+        titles: [
+          "Principles of the Splash Control Technique in Diving",
+          "In Search of the Awesome Rip in Platform Diving Entries",
+          "Analysing Splash in Competitive Diving",
+          "The Hydrodynamics of High Diving",
+          "Dynamically Deforming Single Jointed Diver Models Reduce Pinch off Depth"
+        ]
+      }
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function slugifyTitle(title) {
+      return String(title || "")
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/&/g, " and ")
+        .replace(/[“”]/g, "")
+        .replace(/[’']/g, "")
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function fileNameFor(source) {
+      return `${slugifyTitle(source.title)}_(${source.year}).pdf`;
+    }
+
+    function localPdfHref(source) {
+      return encodeURI(PDF_ROOT + fileNameFor(source));
+    }
+
+    async function getSources() {
+      const response = await fetch(SOURCES_URL);
+
+      if (!response.ok) {
+        throw new Error(`sources.json lataus epäonnistui. HTTP-status: ${response.status}`);
+      }
+
+      const sources = await response.json();
+
+      if (!Array.isArray(sources)) {
+        throw new Error("sources.json pitää olla JSON-taulukko.");
+      }
+
+      return sources;
+    }
+
+    function sourceCard(source, globalIndex) {
+      const tags = Array.isArray(source.tags) ? source.tags : [];
+      const tagHtml = tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+
+      return `
+        <article class="reading-item">
+          <div class="reading-index">${globalIndex}</div>
+          <div class="item-content">
+            <h3>${escapeHtml(source.title)}</h3>
+            <div class="meta">
+              <span class="tag year">${escapeHtml(source.year)}</span>
+              <span class="tag">${escapeHtml(source.category)}</span>
+              ${tagHtml}
+            </div>
+            <p class="summary">${escapeHtml(source.summary)}</p>
+            <div class="actions">
+              <a class="button primary" href="${localPdfHref(source)}" target="_blank" rel="noopener noreferrer">Avaa PDF</a>
+              <a class="button secondary" href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Verkkolähde</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderToc() {
+      const toc = document.querySelector("#toc");
+      toc.innerHTML = stages
+        .map(stage => `<a class="small-link" href="#${stage.id}">${escapeHtml(stage.title.replace(/^[0-9]+\\.\\s*/, ""))}</a>`)
+        .join("");
+    }
+
+    function renderStages(sources) {
+      const content = document.querySelector("#content");
+      const sourceByTitle = new Map(sources.map(source => [source.title, source]));
+      const usedTitles = new Set();
+      let globalIndex = 1;
+
+      const stageHtml = stages.map((stage, stageIndex) => {
+        const items = stage.titles.map(title => {
+          const source = sourceByTitle.get(title);
+
+          if (!source) {
+            return `
+              <article class="reading-item">
+                <div class="reading-index missing">!</div>
+                <div class="item-content">
+                  <h3 class="missing">${escapeHtml(title)}</h3>
+                  <p class="summary">Tätä otsikkoa ei löytynyt tiedostosta <code>meta/sources.json</code>. Tarkista, että otsikko on kirjoitettu täsmälleen samalla tavalla sekä JSONissa että lukujärjestyksessä.</p>
+                </div>
+              </article>
+            `;
+          }
+
+          usedTitles.add(title);
+          return sourceCard(source, globalIndex++);
+        }).join("");
+
+        return `
+          <section id="${stage.id}" class="stage">
+            <header class="stage-header">
+              <div class="stage-number">${stageIndex + 1}</div>
+              <div>
+                <h2>${escapeHtml(stage.title)}</h2>
+                <p class="stage-description">${escapeHtml(stage.description)}</p>
+              </div>
+            </header>
+            <div class="items">${items}</div>
+          </section>
+        `;
+      }).join("");
+
+      const unusedSources = sources.filter(source => !usedTitles.has(source.title));
+
+      const extrasHtml = unusedSources.length
+        ? `
+          <section id="extra" class="stage">
+            <header class="stage-header">
+              <div class="stage-number">+</div>
+              <div>
+                <h2>Lisätyt lähteet, joita ei ole vielä sijoitettu lukujärjestykseen</h2>
+                <p class="stage-description">Nämä löytyivät JSON-tiedostosta, mutta niitä ei vielä ole stages-listassa. Lisää ne haluamaasi vaiheeseen lukujärjestyssivun JavaScriptissä.</p>
+              </div>
+            </header>
+            <div class="items">${unusedSources.map(source => sourceCard(source, globalIndex++)).join("")}</div>
+          </section>
+        `
+        : "";
+
+      content.innerHTML = stageHtml + extrasHtml;
+    }
+
+    async function init() {
+      const notice = document.querySelector("#notice");
+      const sourceCount = document.querySelector("#sourceCount");
+      const stageCount = document.querySelector("#stageCount");
+
+      renderToc();
+      stageCount.textContent = stages.length;
+
+      try {
+        const sources = await getSources();
+        sourceCount.textContent = sources.length;
+        renderStages(sources);
+      } catch (error) {
+        console.error(error);
+        sourceCount.textContent = "0";
+        notice.style.display = "block";
+        notice.textContent = "Lähteitä ei löytynyt. Tarkista, että tiedosto meta/sources.json on oikeassa paikassa ja että se on validia JSONia.";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
