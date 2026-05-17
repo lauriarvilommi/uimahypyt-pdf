@@ -16,7 +16,7 @@ const rootInput = document.querySelector("#folderRoot");
 const jumpLinks = document.querySelector("#jumpLinks");
 const sourceCount = document.querySelector("#sourceCount");
 
-async const getCource = () {
+async function getCource() {
   const url = "./meta/sources.json";
   try {
     const response = await fetch(url);
