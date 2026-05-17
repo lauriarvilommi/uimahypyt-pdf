@@ -23,7 +23,7 @@ Suositeltu rakenne:
 ```text
 .
 └── docs/
-    └── README.md
+    ├── README.md
     ├── index.html
     └── pdf/
         ├── a_new_model_of_the_springboard_in_diving_(2004).pdf
