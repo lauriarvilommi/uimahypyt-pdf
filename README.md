@@ -22,13 +22,14 @@ Suositeltu rakenne:
 
 ```text
 .
-├── README.md
-├── index.html
-└── pdf/
-    ├── a_new_model_of_the_springboard_in_diving_(2004).pdf
-    ├── computer_simulation_of_the_takeoff_in_springboard_diving_(2005).pdf
-    ├── variability_and_control_in_springboard_diving_(2017).pdf
-    └── ...
+└── docs/
+    └── README.md
+    ├── index.html
+    └── pdf/
+        ├── a_new_model_of_the_springboard_in_diving_(2004).pdf
+        ├── computer_simulation_of_the_takeoff_in_springboard_diving_(2005).pdf
+        ├── variability_and_control_in_springboard_diving_(2017).pdf
+        └── ...
 ```
 
 `index.html` olettaa oletuksena, että PDF-tiedostot ovat `pdf/`-kansiossa.
