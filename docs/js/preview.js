@@ -1,94 +1,108 @@
 // Muuta vain tämä, jos haluat pysyvän oletuspolun.
-    let FOLDER_ROOT = "./pdf/";
+let FOLDER_ROOT = "./pdf/";
 
-    const sources = ''
+const categoryNotes = {
+  "Ponnahduslauta, ponnistus ja simulointi": "Laudan liike, ponnistuksen simulaatio, korkeuden tuotto ja hyppääjän–laudan vuorovaikutus.",
+  "Mittaus, palaute ja oppiminen": "Mittalaitteet, nopea palaute, liikkeen hallinta, harjoittelun suunnittelu ja oppimisen edustavuus.",
+  "Ilmavaihe, rotaatio ja kierteet": "Voltit, kierteet, kontaktikierre, ilmassa syntyvä kierre ja rotaation hallinta.",
+  "Veteentulo, splash/rip ja hydrodynamiikka": "Rip-entry, roiskeen mittaaminen, ilmatasku, cavity ja veteentulon hydrodynamiikka.",
+  "Hakemisto ja jatkohaku": "Laajemmat bibliografiat ja apulähteet uusien PDF:ien löytämiseen."
+};
 
-    const categoryNotes = {
-      "Ponnahduslauta, ponnistus ja simulointi": "Laudan liike, ponnistuksen simulaatio, korkeuden tuotto ja hyppääjän–laudan vuorovaikutus.",
-      "Mittaus, palaute ja oppiminen": "Mittalaitteet, nopea palaute, liikkeen hallinta, harjoittelun suunnittelu ja oppimisen edustavuus.",
-      "Ilmavaihe, rotaatio ja kierteet": "Voltit, kierteet, kontaktikierre, ilmassa syntyvä kierre ja rotaation hallinta.",
-      "Veteentulo, splash/rip ja hydrodynamiikka": "Rip-entry, roiskeen mittaaminen, ilmatasku, cavity ja veteentulon hydrodynamiikka.",
-      "Hakemisto ja jatkohaku": "Laajemmat bibliografiat ja apulähteet uusien PDF:ien löytämiseen."
-    };
+const content = document.querySelector("#content");
+const emptyState = document.querySelector("#emptyState");
+const search = document.querySelector("#search");
+const rootInput = document.querySelector("#folderRoot");
+const jumpLinks = document.querySelector("#jumpLinks");
+const sourceCount = document.querySelector("#sourceCount");
 
-    const content = document.querySelector("#content");
-    const emptyState = document.querySelector("#emptyState");
-    const search = document.querySelector("#search");
-    const rootInput = document.querySelector("#folderRoot");
-    const jumpLinks = document.querySelector("#jumpLinks");
-    const sourceCount = document.querySelector("#sourceCount");
-
-    function slugifyTitle(title) {
-      return title
-        .toLowerCase()
-        .normalize("NFKD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/&/g, " and ")
-        .replace(/[“”]/g, "")
-        .replace(/[’']/g, "")
-        .replace(/[^a-z0-9]+/g, "_")
-        .replace(/^_+|_+$/g, "");
+async const getCource = () {
+  const url = "./meta/sources.json";
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
     }
+    
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 
-    function fileNameFor(source) {
-      return `${slugifyTitle(source.title)}_(${source.year}).pdf`;
-    }
+function slugifyTitle(title) {
+  return title
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[“”]/g, "")
+    .replace(/[’']/g, "")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
 
-    function normalizeFolderRoot(root) {
-      let r = String(root || "").trim();
-      if (!r) return "./";
-      if (/^[a-zA-Z]:[\\/]/.test(r)) {
-        r = "file:///" + r.replace(/\\/g, "/");
-      }
-      r = r.replace(/\\/g, "/");
-      if (!r.endsWith("/")) r += "/";
-      return r;
-    }
+function fileNameFor(source) {
+  return `${slugifyTitle(source.title)}_(${source.year}).pdf`;
+}
 
-    function localHref(source) {
-      const root = normalizeFolderRoot(FOLDER_ROOT);
-      return encodeURI(root + fileNameFor(source));
-    }
+function normalizeFolderRoot(root) {
+  let r = String(root || "").trim();
+  if (!r) return "./";
+  if (/^[a-zA-Z]:[\\/]/.test(r)) {
+    r = "file:///" + r.replace(/\\/g, "/");
+  }
+  r = r.replace(/\\/g, "/");
+  if (!r.endsWith("/")) r += "/";
+  return r;
+}
 
-    function categoryId(category) {
-      return slugifyTitle(category);
-    }
+function localHref(source) {
+  const root = normalizeFolderRoot(FOLDER_ROOT);
+  return encodeURI(root + fileNameFor(source));
+}
 
-    function groupByCategory(items) {
-      return items.reduce((groups, item) => {
-        groups[item.category] = groups[item.category] || [];
-        groups[item.category].push(item);
-        return groups;
-      }, {});
-    }
+function categoryId(category) {
+  return slugifyTitle(category);
+}
 
-    function sourceMatches(source, query) {
-      const haystack = [source.title, source.year, source.category, source.summary, ...source.tags].join(" ").toLowerCase();
-      return haystack.includes(query.toLowerCase());
-    }
+function groupByCategory(items) {
+  return items.reduce((groups, item) => {
+    groups[item.category] = groups[item.category] || [];
+    groups[item.category].push(item);
+    return groups;
+  }, {});
+}
 
-    function renderJumpLinks(categories) {
-      jumpLinks.innerHTML = categories
-        .map(category => `<a class="chip" href="#${categoryId(category)}">${category}</a>`)
-        .join("");
-    }
+function sourceMatches(source, query) {
+  const haystack = [source.title, source.year, source.category, source.summary, ...source.tags].join(" ").toLowerCase();
+  return haystack.includes(query.toLowerCase());
+}
 
-    function render() {
-      const query = search.value.trim();
-      const filtered = query ? sources.filter(source => sourceMatches(source, query)) : sources;
-      const groups = groupByCategory(filtered);
-      const categories = Object.keys(groups);
+function renderJumpLinks(categories) {
+  jumpLinks.innerHTML = categories
+    .map(category => `<a class="chip" href="#${categoryId(category)}">${category}</a>`)
+    .join("");
+}
 
-      sourceCount.textContent = `${sources.length} lähdettä`;
-      renderJumpLinks(Object.keys(groupByCategory(sources)));
-      emptyState.style.display = filtered.length ? "none" : "block";
+async function render() {
+  const query = search.value.trim();
+  const source = await getSource();
+  const filtered = query ? sources.filter(source => sourceMatches(source, query)) : sources;
+  const groups = groupByCategory(filtered);
+  const categories = Object.keys(groups);
 
-      content.innerHTML = categories.map(category => {
-        const cards = groups[category].map(source => {
-          const fileName = fileNameFor(source);
-          const tagHtml = source.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+  sourceCount.textContent = `${sources.length} lähdettä`;
+  renderJumpLinks(Object.keys(groupByCategory(sources)));
+  emptyState.style.display = filtered.length ? "none" : "block";
 
-          return `
+  content.innerHTML = categories.map(category => {
+      const cards = groups[category].map(source => {
+      const fileName = fileNameFor(source);
+      const tagHtml = source.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+
+      return `
             <article class="source-card">
               <h3 class="source-title">${source.title}</h3>
               <div class="meta-row">
@@ -103,10 +117,10 @@
               </div>
             </article>
           `;
-        }).join("");
+      }).join("");
 
-        return `
-          <section id="${categoryId(category)}" class="category">
+      return `
+        <section id="${categoryId(category)}" class="category">
             <div class="category-head">
               <div>
                 <h2>${category}</h2>
@@ -117,18 +131,18 @@
             <div class="cards">${cards}</div>
           </section>
         `;
-      }).join("");
-    }
+  }).join("");
+}
 
-    const savedRoot = localStorage.getItem("divingSourcesFolderRoot");
-    if (savedRoot) FOLDER_ROOT = savedRoot;
-    rootInput.value = FOLDER_ROOT;
+const savedRoot = localStorage.getItem("divingSourcesFolderRoot");
+if (savedRoot) FOLDER_ROOT = savedRoot;
+rootInput.value = FOLDER_ROOT;
 
-    rootInput.addEventListener("input", event => {
-      FOLDER_ROOT = event.target.value;
-      localStorage.setItem("divingSourcesFolderRoot", FOLDER_ROOT);
-      render();
-    });
+rootInput.addEventListener("input", event => {
+  FOLDER_ROOT = event.target.value;
+  localStorage.setItem("divingSourcesFolderRoot", FOLDER_ROOT);
+  render();
+});
 
     search.addEventListener("input", render);
     render();
