@@ -1,5 +1,9 @@
-// Muuta vain tämä, jos haluat pysyvän oletuspolun.
+// Muuta vain tämä, jos haluat pysyvän oletuspolun GitHub Pagesissa.
+// Jos PDF:t ovat repossa kansiossa /pdf, jätä tämä näin.
 let FOLDER_ROOT = "./pdf/";
+
+const SOURCES_URL = "./meta/sources.json";
+const STORAGE_KEY = "divingSourcesFolderRoot";
 
 const categoryNotes = {
   "Ponnahduslauta, ponnistus ja simulointi": "Laudan liike, ponnistuksen simulaatio, korkeuden tuotto ja hyppääjän–laudan vuorovaikutus.",
@@ -9,30 +13,41 @@ const categoryNotes = {
   "Hakemisto ja jatkohaku": "Laajemmat bibliografiat ja apulähteet uusien PDF:ien löytämiseen."
 };
 
-const content = document.querySelector("#content");
-const emptyState = document.querySelector("#emptyState");
-const search = document.querySelector("#search");
-const rootInput = document.querySelector("#folderRoot");
-const jumpLinks = document.querySelector("#jumpLinks");
-const sourceCount = document.querySelector("#sourceCount");
+let sources = [];
 
-async function getCource() {
-  const url = "./meta/sources.json";
+function getRequiredElement(selector) {
+  const element = document.querySelector(selector);
+
+  if (!element) {
+    throw new Error(`Elementtiä ei löydy: ${selector}`);
+  }
+
+  return element;
+}
+
+async function getSources() {
   try {
-    const response = await fetch(url);
+    const response = await fetch(SOURCES_URL);
+
     if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+      throw new Error(`sources.json lataus epäonnistui. HTTP-status: ${response.status}`);
     }
-    
+
     const result = await response.json();
+
+    if (!Array.isArray(result)) {
+      throw new Error("sources.json pitää olla JSON-taulukko.");
+    }
+
     return result;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
+    return [];
   }
 }
 
 function slugifyTitle(title) {
-  return title
+  return String(title || "")
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -48,14 +63,24 @@ function fileNameFor(source) {
 }
 
 function normalizeFolderRoot(root) {
-  let r = String(root || "").trim();
-  if (!r) return "./";
-  if (/^[a-zA-Z]:[\\/]/.test(r)) {
-    r = "file:///" + r.replace(/\\/g, "/");
+  let normalizedRoot = String(root || "").trim();
+
+  if (!normalizedRoot) {
+    return "./";
   }
-  r = r.replace(/\\/g, "/");
-  if (!r.endsWith("/")) r += "/";
-  return r;
+
+  // Windows-polku, esimerkiksi C:\Users\nimi\pdf
+  if (/^[a-zA-Z]:[\\/]/.test(normalizedRoot)) {
+    normalizedRoot = "file:///" + normalizedRoot.replace(/\\/g, "/");
+  }
+
+  normalizedRoot = normalizedRoot.replace(/\\/g, "/");
+
+  if (!normalizedRoot.endsWith("/")) {
+    normalizedRoot += "/";
+  }
+
+  return normalizedRoot;
 }
 
 function localHref(source) {
@@ -69,80 +94,139 @@ function categoryId(category) {
 
 function groupByCategory(items) {
   return items.reduce((groups, item) => {
-    groups[item.category] = groups[item.category] || [];
-    groups[item.category].push(item);
+    const category = item.category || "Muut lähteet";
+    groups[category] = groups[category] || [];
+    groups[category].push(item);
     return groups;
   }, {});
 }
 
 function sourceMatches(source, query) {
-  const haystack = [source.title, source.year, source.category, source.summary, ...source.tags].join(" ").toLowerCase();
+  const tags = Array.isArray(source.tags) ? source.tags : [];
+
+  const haystack = [
+    source.title,
+    source.year,
+    source.category,
+    source.summary,
+    ...tags
+  ]
+    .join(" ")
+    .toLowerCase();
+
   return haystack.includes(query.toLowerCase());
 }
 
-function renderJumpLinks(categories) {
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderJumpLinks(jumpLinks, categories) {
   jumpLinks.innerHTML = categories
-    .map(category => `<a class="chip" href="#${categoryId(category)}">${category}</a>`)
+    .map(category => `<a class="chip" href="#${categoryId(category)}">${escapeHtml(category)}</a>`)
     .join("");
 }
 
-async function render() {
+function render() {
+  const content = getRequiredElement("#content");
+  const emptyState = getRequiredElement("#emptyState");
+  const search = getRequiredElement("#search");
+  const jumpLinks = getRequiredElement("#jumpLinks");
+  const sourceCount = getRequiredElement("#sourceCount");
+
   const query = search.value.trim();
-  const source = await getSource();
-  const filtered = query ? sources.filter(source => sourceMatches(source, query)) : sources;
+
+  const filtered = query
+    ? sources.filter(source => sourceMatches(source, query))
+    : sources;
+
   const groups = groupByCategory(filtered);
   const categories = Object.keys(groups);
+  const allCategories = Object.keys(groupByCategory(sources));
 
   sourceCount.textContent = `${sources.length} lähdettä`;
-  renderJumpLinks(Object.keys(groupByCategory(sources)));
+  renderJumpLinks(jumpLinks, allCategories);
   emptyState.style.display = filtered.length ? "none" : "block";
 
   content.innerHTML = categories.map(category => {
-      const cards = groups[category].map(source => {
+    const cards = groups[category].map(source => {
       const fileName = fileNameFor(source);
-      const tagHtml = source.tags.map(tag => `<span class="tag">${tag}</span>`).join("");
+      const tags = Array.isArray(source.tags) ? source.tags : [];
+      const tagHtml = tags
+        .map(tag => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
 
       return `
-            <article class="source-card">
-              <h3 class="source-title">${source.title}</h3>
-              <div class="meta-row">
-                <span class="tag year">${source.year}</span>
-                ${tagHtml}
-              </div>
-              <p class="summary">${source.summary}</p>
-              <code class="file-name">${fileName}</code>
-              <div class="actions">
-                <a class="button primary" target="_blank" href="${localHref(source)}">Avaa tallennettu PDF</a>
-                <a class="button secondary" href="${source.url}" target="_blank" rel="noopener noreferrer">Verkkolähde</a>
-              </div>
-            </article>
-          `;
-      }).join("");
+        <article class="source-card">
+          <h3 class="source-title">${escapeHtml(source.title)}</h3>
 
-      return `
-        <section id="${categoryId(category)}" class="category">
-            <div class="category-head">
-              <div>
-                <h2>${category}</h2>
-                <p class="category-note">${categoryNotes[category] || ""}</p>
-              </div>
-              <span class="chip">${groups[category].length} lähdettä</span>
-            </div>
-            <div class="cards">${cards}</div>
-          </section>
-        `;
+          <div class="meta-row">
+            <span class="tag year">${escapeHtml(source.year)}</span>
+            ${tagHtml}
+          </div>
+
+          <p class="summary">${escapeHtml(source.summary)}</p>
+
+          <code class="file-name">${escapeHtml(fileName)}</code>
+
+          <div class="actions">
+            <a class="button primary" target="_blank" rel="noopener noreferrer" href="${localHref(source)}">Avaa tallennettu PDF</a>
+            <a class="button secondary" target="_blank" rel="noopener noreferrer" href="${escapeHtml(source.url)}">Verkkolähde</a>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    return `
+      <section id="${categoryId(category)}" class="category">
+        <div class="category-head">
+          <div>
+            <h2>${escapeHtml(category)}</h2>
+            <p class="category-note">${escapeHtml(categoryNotes[category] || "")}</p>
+          </div>
+          <span class="chip">${groups[category].length} lähdettä</span>
+        </div>
+
+        <div class="cards">${cards}</div>
+      </section>
+    `;
   }).join("");
 }
 
-const savedRoot = localStorage.getItem("divingSourcesFolderRoot");
-if (savedRoot) FOLDER_ROOT = savedRoot;
-rootInput.value = FOLDER_ROOT;
+async function init() {
+  const search = getRequiredElement("#search");
+  const rootInput = getRequiredElement("#folderRoot");
+  const emptyState = getRequiredElement("#emptyState");
 
-rootInput.addEventListener("input", event => {
-  FOLDER_ROOT = event.target.value;
-  localStorage.setItem("divingSourcesFolderRoot", FOLDER_ROOT);
-  render();
-});
+  const savedRoot = localStorage.getItem(STORAGE_KEY);
 
-    search.addEventListener("input", render);
+  if (savedRoot) {
+    FOLDER_ROOT = savedRoot;
+  }
+
+  rootInput.value = FOLDER_ROOT;
+
+  sources = await getSources();
+
+  if (!sources.length) {
+    emptyState.style.display = "block";
+    emptyState.textContent = "Lähteitä ei löytynyt. Tarkista, että tiedosto meta/sources.json löytyy GitHub-reposta ja että sen sisältö on JSON-taulukko.";
+  }
+
+  rootInput.addEventListener("input", event => {
+    FOLDER_ROOT = event.target.value;
+    localStorage.setItem(STORAGE_KEY, FOLDER_ROOT);
     render();
+  });
+
+  search.addEventListener("input", render);
+
+  render();
+}
+
+document.addEventListener("DOMContentLoaded", init);
