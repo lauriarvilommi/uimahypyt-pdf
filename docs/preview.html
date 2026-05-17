@@ -14,18 +14,11 @@
         <h1>Uimahyppyjen tekniikka ja mekaniikka – lisälähteet</h1>
         <p class="lead">
           Tämä HTML-sivu toimii sisällysluettelona kansioon tallennetuille PDF-tiedostoille.
-          Paikallinen linkki muodostetaan automaattisesti muuttujasta <code>FOLDER_ROOT</code>
-          ja tiedostonimestä, joka noudattaa kaavaa <code>otsikko_(yyyy).pdf</code>.
+          Tiedostonimet noudattavat kaavaa <code>otsikko_(yyyy).pdf</code>.
         </p>
       </div>
 
       <div class="hero-side">
-        <div class="panel">
-          <h2>Kansion juuri</h2>
-          <p>Muuta JavaScriptin alussa olevaa <code>FOLDER_ROOT</code>-muuttujaa tai kirjoita juuri tähän kenttään.</p>
-          <input id="folderRoot" class="root-input" type="text" spellcheck="false" />
-          <span class="hint">Esim. <code>./pdf/</code>, <code>C:\Users\Lauri\Documents\uimahypyt\</code> tai <code>file:///C:/Users/Lauri/Documents/uimahypyt/</code></span>
-        </div>
         <div class="panel">
           <h2 id="sourceCount">22 lähdettä</h2>
           <p>Jokaisessa kortissa on paikallinen PDF-linkki, verkkolähde ja odotettu tiedostonimi.</p>
@@ -44,8 +37,6 @@
     <div id="emptyState" class="empty-state">Hakusanalla ei löytynyt lähteitä.</div>
 
     <footer>
-      Vinkki: jos selain ei avaa Windows-polkuja suoraan, käytä muotoa <code>file:///C:/polku/kansioon/</code>
-      tai sijoita tämä HTML-tiedosto samaan pääkansioon PDF-kansion kanssa ja käytä suhteellista polkua <code>./pdf/</code>.
     </footer>
   </main>
 
