@@ -1,9 +1,9 @@
 [
     {
-      id: "orientation",
-      title: "1. Aloita yleiskuvasta",
-      description: "Nämä lähteet auttavat muodostamaan kokonaiskuvan uimahyppyjen fysiikasta, keskeisistä käsitteistä ja siitä, millaisia aiheita koko lähdearkisto sisältää.",
-      titles: [
+      "id": "orientation",
+      "title": "1. Aloita yleiskuvasta",
+      "description": "Nämä lähteet auttavat muodostamaan kokonaiskuvan uimahyppyjen fysiikasta, keskeisistä käsitteistä ja siitä, millaisia aiheita koko lähdearkisto sisältää.",
+      "titles": [
         "Diving Literature Complete Springboard Diving Platform Diving High Diving",
         "The Science and Engineering behind Springboard Diving",
         "Splashing Physics of Springboard Diving",
@@ -11,10 +11,10 @@
       ]
     },
     {
-      id: "takeoff-board",
-      title: "2. Ponnistus ja ponnahduslaudan mekaniikka",
-      description: "Tässä vaiheessa kannattaa keskittyä siihen, miten vauhdinotto, laudan taipuma, fulcrum, ponnistus ja kehon liike-energia tuottavat korkeutta ja rotaatiota.",
-      titles: [
+      "id": "takeoff-board",
+      "title": "2. Ponnistus ja ponnahduslaudan mekaniikka",
+      "description": "Tässä vaiheessa kannattaa keskittyä siihen, miten vauhdinotto, laudan taipuma, fulcrum, ponnistus ja kehon liike-energia tuottavat korkeutta ja rotaatiota.",
+      "titles": [
         "Kinematic Determinants of Dive Height in Springboard Diving",
         "The Effect of Springboard Fulcrum Position on the Kinematics of Junior Divers",
         "A New Model of the Springboard in Diving",
@@ -26,20 +26,20 @@
       ]
     },
     {
-      id: "simulation-models",
-      title: "3. Simulaatiot ja matemaattiset mallit",
-      description: "Kun ponnistuksen perusmekaniikka on tuttu, nämä lähteet näyttävät, miten hyppääjän ja laudan vuorovaikutusta voidaan mallintaa tietokoneella.",
-      titles: [
+      "id": "simulation-models",
+      "title": "3. Simulaatiot ja matemaattiset mallit",
+      "description": "Kun ponnistuksen perusmekaniikka on tuttu, nämä lähteet näyttävät, miten hyppääjän ja laudan vuorovaikutusta voidaan mallintaa tietokoneella.",
+      "titles": [
         "Parameter Determination for a Computer Simulation Model of a Diver and a Springboard",
         "Computer Simulation of the Takeoff in Springboard Diving",
         "Simulation of Human Diving Hodgins"
       ]
     },
     {
-      id: "control-learning",
-      title: "4. Liikkeen hallinta, palaute ja oppiminen",
-      description: "Tämä osio yhdistää biomekaniikan valmennukseen: miten hyppääjä säätelee liikettä, miten vaihtelu näkyy suorituksessa ja miten harjoitteluympäristö vaikuttaa oppimiseen.",
-      titles: [
+      "id": "control-learning",
+      "title": "4. Liikkeen hallinta, palaute ja oppiminen",
+      "description": "Tämä osio yhdistää biomekaniikan valmennukseen: miten hyppääjä säätelee liikettä, miten vaihtelu näkyy suorituksessa ja miten harjoitteluympäristö vaikuttaa oppimiseen.",
+      "titles": [
         "Movement Control in Springboard Diving",
         "Variability and Control in Springboard Diving",
         "Variability and the Control of Rotation During Springboard Diving",
@@ -52,10 +52,10 @@
       ]
     },
     {
-      id: "twist-rotation",
-      title: "5. Voltit, rotaatio ja kierteet",
-      description: "Tässä vaiheessa mennään syvemmälle kulmaliikemäärään, hitausmomenttiin, kontaktikierteeseen, ilmassa syntyvään kierteeseen ja yksittäisten hyppyjen kinematiikkaan.",
-      titles: [
+      "id": "twist-rotation",
+      "title": "5. Voltit, rotaatio ja kierteet",
+      "description": "Tässä vaiheessa mennään syvemmälle kulmaliikemäärään, hitausmomenttiin, kontaktikierteeseen, ilmassa syntyvään kierteeseen ja yksittäisten hyppyjen kinematiikkaan.",
+      "titles": [
         "Do Springboard Divers Violate Angular Momentum Conservation Cliff Frohlich",
         "The Biomechanics of Twisting Somersaults Part I Rigid body motions",
         "The Biomechanics of Twisting Somersaults Part II Contact twist",
@@ -69,10 +69,10 @@
       ]
     },
     {
-      id: "entry-splash",
-      title: "6. Veteentulo, splash ja hydrodynamiikka",
-      description: "Lopuksi kannattaa tarkastella, miten veteentulo, käsien ja kehon asento, roiske, cavity ja hydrodynamiikka liittyvät onnistuneeseen suoritukseen.",
-      titles: [
+      "id": "entry-splash",
+      "title": "6. Veteentulo, splash ja hydrodynamiikka",
+      "description": "Lopuksi kannattaa tarkastella, miten veteentulo, käsien ja kehon asento, roiske, cavity ja hydrodynamiikka liittyvät onnistuneeseen suoritukseen.",
+      "titles": [
         "Principles of the Splash Control Technique in Diving",
         "In Search of the Awesome Rip in Platform Diving Entries",
         "Analysing Splash in Competitive Diving",
