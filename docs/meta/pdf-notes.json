@@ -1,5 +1,8 @@
-[
-  {
-    "id": "pdf"
-  }
-]
+{
+  "a_mathematical_model_for_the_take-off_in_platform_diving_(2016)": {
+    "note": "Eteläkorealainen tutkimus, jossa tutkittiin kuinka nivelkulmat näkyväh paremmilla ja huonommilla.",
+    "whyUseful": "tutkittu hyvien ja huonojen hyppääjien teknisiä eroja nivelten kulmissa.",
+    "followUp": "Palaan tähän, kun tarvitaan näyttöä asiasta.",
+    "tags": ["nivelkulmat_taitavilla", "nivelkulma_taitamattomilla", "hip_ankle", "knee_ankle"]
+  },
+}
