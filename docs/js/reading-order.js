@@ -1,6 +1,7 @@
 const SOURCES_URL = "./meta/sources.json";
 const STAGES_URL = "./meta/stages.json";
 const PDF_ROOT = "./pdf/";
+const READ_STORAGE_PREFIX = "divingSourcesRead:";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -29,6 +30,23 @@ function fileNameFor(source) {
 
 function localPdfHref(source) {
   return encodeURI(PDF_ROOT + fileNameFor(source));
+}
+
+function readStorageKeyFor(source) {
+  return `${READ_STORAGE_PREFIX}${slugifyTitle(source.title)}_${source.year}`;
+}
+
+function isSourceRead(source) {
+  return localStorage.getItem(readStorageKeyFor(source)) === "1";
+}
+
+function setSourceRead(readKey, isRead) {
+  if (isRead) {
+    localStorage.setItem(readKey, "1");
+    return;
+  }
+
+  localStorage.removeItem(readKey);
 }
 
 async function fetchJson(url, expectedName) {
@@ -72,11 +90,27 @@ function sourceCard(source, globalIndex) {
     .map(tag => `<span class="tag">${escapeHtml(tag)}</span>`)
     .join("");
 
+  const readKey = readStorageKeyFor(source);
+  const checked = isSourceRead(source) ? "checked" : "";
+  const readClass = checked ? " is-read" : "";
+
   return `
-    <article class="reading-item">
+    <article class="reading-item${readClass}" data-read-key="${escapeHtml(readKey)}">
       <div class="reading-index">${globalIndex}</div>
       <div class="item-content">
-        <h3>${escapeHtml(source.title)}</h3>
+        <div class="item-title-row">
+          <h3>${escapeHtml(source.title)}</h3>
+
+          <label class="read-check">
+            <input
+              type="checkbox"
+              class="read-checkbox"
+              data-read-key="${escapeHtml(readKey)}"
+              ${checked}
+            >
+            <span>Luettu</span>
+          </label>
+        </div>
 
         <div class="meta">
           <span class="tag year">${escapeHtml(source.year)}</span>
@@ -127,6 +161,51 @@ function renderToc(stages) {
       return `<a class="small-link" href="#${escapeHtml(id)}">${escapeHtml(cleanTitle)}</a>`;
     })
     .join("");
+}
+
+function updateReadProgress() {
+  const checkboxes = Array.from(document.querySelectorAll(".read-checkbox"));
+  const readCount = checkboxes.filter(checkbox => checkbox.checked).length;
+  const totalCount = checkboxes.length;
+
+  const readCountElement = document.querySelector("#readCount");
+  const readProgressElement = document.querySelector("#readProgress");
+
+  if (readCountElement) {
+    readCountElement.textContent = `${readCount}/${totalCount}`;
+  }
+
+  if (readProgressElement) {
+    const percent = totalCount ? Math.round((readCount / totalCount) * 100) : 0;
+    readProgressElement.textContent = `${percent} % luettu`;
+  }
+}
+
+function setupReadCheckboxListener() {
+  const content = document.querySelector("#content");
+
+  if (!content) {
+    return;
+  }
+
+  content.addEventListener("change", event => {
+    const checkbox = event.target.closest(".read-checkbox");
+
+    if (!checkbox) {
+      return;
+    }
+
+    const readKey = checkbox.dataset.readKey;
+    const article = checkbox.closest(".reading-item");
+
+    setSourceRead(readKey, checkbox.checked);
+
+    if (article) {
+      article.classList.toggle("is-read", checkbox.checked);
+    }
+
+    updateReadProgress();
+  });
 }
 
 function renderStages(sources, stages) {
@@ -200,6 +279,7 @@ function renderStages(sources, stages) {
     : "";
 
   content.innerHTML = stageHtml + extrasHtml;
+  updateReadProgress();
 }
 
 function showNotice(message) {
@@ -217,6 +297,8 @@ function showNotice(message) {
 async function init() {
   const sourceCount = document.querySelector("#sourceCount");
   const stageCount = document.querySelector("#stageCount");
+
+  setupReadCheckboxListener();
 
   try {
     const [sources, stages] = await Promise.all([
