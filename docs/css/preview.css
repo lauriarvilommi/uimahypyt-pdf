@@ -78,7 +78,7 @@
       align-items: center;
       gap: 8px;
       min-height: 40px;
-      padding: 5px 14px;
+      padding: 2px 14px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.07);
@@ -267,7 +267,7 @@
     }
 
     .chip {
-      padding: 5px 11px;
+      padding: 2px 11px;
       font-size: 0.82rem;
       font-weight: 650;
     }
@@ -330,7 +330,7 @@
     }
 
     .tag {
-      padding: 5px 9px;
+      padding: 2px 9px;
       font-size: 0.75rem;
       color: rgba(238,247,255,0.78);
     }
@@ -372,7 +372,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 5px 12px;
+      padding: 2px 12px;
       border-radius: 10px;
       text-decoration: none;
       font-size: 0.86rem;
