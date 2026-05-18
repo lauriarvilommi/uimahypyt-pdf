@@ -1,8 +1,8 @@
 {
   "kinematic_analysis_of_diving_back_pike_somersault_in_platform_according_to_players_skill_level_(2010).pdf": {
-    "note": "Taitavien ja taitamattomien hyppääjien tekniikoiden erojen tutkiminen on todennäköisesti hedelmällinen suunta.",
-    "whyUseful": "Lähtöhetkellä taitavien hyppääjien lonkan ja polvinivelkulmat suurempia kuin taitamattomilla.",
-    "followUp": "Tutkimus lainattavaksi liitettäväksi raporttiin.",
+    "note": "Taitavien ja taitamattomien hyppääjien nivelkulmien erojen tutkiminen on todennäköisesti hedelmällinen suunta.",
+    "whyUseful": "Tutkimuksessa havaitiin, että lähtöhetken lonkan ja polven kulmat suurempia taitavilla kuin taitamattomilla.",
+    "followUp": "Tutkimus lainattavaksi ja liitettäväksi raporttiin.",
     "tags": ["Nivelkulmat taitavilla", "Nivelkulmat taitamattomilla", "lonkan kulma", "polvikulma"]
   }
 }
