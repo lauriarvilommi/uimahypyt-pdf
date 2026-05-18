@@ -470,6 +470,74 @@
   opacity: 0.78;
 }
 
+.pdf-note {
+  margin: 16px 0 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 211, 122, 0.32);
+  border-left: 5px solid #ffd37a;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 211, 122, 0.16),
+      rgba(255, 255, 255, 0.055)
+    );
+}
+
+.pdf-note h4 {
+  margin: 0 0 8px;
+  color: #ffe4a3;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
+}
+
+.pdf-note p {
+  margin: 0 0 10px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.pdf-note p:last-child {
+  margin-bottom: 0;
+}
+
+.useful-reason,
+.follow-up-note {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.useful-reason strong,
+.follow-up-note strong {
+  color: #ffe4a3;
+}
+
+.pdf-note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.note-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(255, 211, 122, 0.13);
+  border: 1px solid rgba(255, 211, 122, 0.28);
+  color: #ffe4a3;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.reading-item.has-pdf-note {
+  box-shadow: inset 4px 0 0 rgba(255, 211, 122, 0.72);
+}
 
 @media (max-width: 900px) {
   .hero {
