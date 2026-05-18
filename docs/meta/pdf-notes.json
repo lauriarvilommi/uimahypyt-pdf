@@ -10,5 +10,5 @@
     "whyUseful": "Keho ei voi olla mallinnettaessa simulaatioissa täysin kiinteä, muttai täysin hyytelöäkään.",
     "followUp": "Jos löytyy yksityiskohtaisempi tapa parameterisoida mallia, tämä lähestymistapa kenties hyödyllinen.",
     "tags": ["Ponnahduslauta", "Wobbling mass", "simulaatio", "malli"]
-  },
+  }
 }
