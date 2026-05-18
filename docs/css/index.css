@@ -187,7 +187,7 @@
       margin: 28px 0 0;
       padding: 20px 24px;
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 10px;
       background: rgba(255, 255, 255, 0.055);
       color: var(--muted);
       line-height: 1.65;
