@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Springboard diving favicon">
+  <defs>
+    <radialGradient id="bg" cx="32%" cy="24%" r="90%">
+      <stop offset="0%" stop-color="#1a9ad3"/>
+      <stop offset="56%" stop-color="#0a355a"/>
+      <stop offset="100%" stop-color="#06101b"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="59" fill="url(#bg)"/>
+  <circle cx="64" cy="64" r="57" fill="none" stroke="#9ef0c4" stroke-width="5" opacity=".78"/>
+  <path d="M23 55 L82 43" stroke="#eef7ff" stroke-width="9" stroke-linecap="round"/>
+  <path d="M27 66 L44 62" stroke="#9ef0c4" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="86" cy="30" r="7" fill="#9ef0c4"/>
+  <path d="M82 39 C70 49 70 62 91 70" fill="none" stroke="#9ef0c4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M72 49 L59 41" stroke="#9ef0c4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M76 65 L67 78" stroke="#9ef0c4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M16 88 C30 80 43 96 57 88 C70 80 83 96 98 88 C105 84 111 84 117 88" fill="none" stroke="#74d6ff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="101" cy="53" r="4" fill="#ffd37a"/>
+</svg>
