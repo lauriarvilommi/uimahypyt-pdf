@@ -6,9 +6,9 @@
     "tags": ["Nivelkulmat taitavilla", "Nivelkulmat taitamattomilla", "lonkan kulma", "polvikulma"]
   },
   "parameter_determination_for_a_computer_simulation_model_of_a_diver_and_a_springboard_(1999).pdf": {
-    "note": "Wobbling mass -karkaistuksella mallinnetulla ihmisellä tehty simulaatio eroaa empiriasta 31%.",
-    "whyUseful": "",
-    "followUp": "Jos löytyy yksityiskohtaisempi tapa parameterisoida mallia, tämä kenties hyödyllinen.",
+    "note": "Wobbling mass -karkeistuksella mallinnetulla ihmisellä tehty simulaatio eroaa empiriasta 31%.",
+    "whyUseful": "Keho ei voi olla mallinnettaessa simulaatioissa täysin kiinteä, muttai täysin hyytelöäkään.",
+    "followUp": "Jos löytyy yksityiskohtaisempi tapa parameterisoida mallia, tämä lähestymistapa kenties hyödyllinen.",
     "tags": ["Ponnahduslauta", "Wobbling mass", "simulaatio", "malli"]
   },
 }
