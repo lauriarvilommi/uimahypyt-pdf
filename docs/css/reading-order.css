@@ -353,13 +353,16 @@
   margin-bottom: 0;
 }
 
+label.read-check {
+    padding: 10px 2px 20px 2px;
+}
+
 .read-check {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
   min-height: 34px;
-  padding: 10px 2px 20px 2px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.075);
