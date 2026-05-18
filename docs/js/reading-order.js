@@ -2,6 +2,7 @@ const SOURCES_URL = "./meta/sources.json";
 const STAGES_URL = "./meta/stages.json";
 const PDF_ROOT = "./pdf/";
 const READ_STORAGE_PREFIX = "divingSourcesRead:";
+const INTERESTING_STORAGE_PREFIX = "divingSourcesInteresting:";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -36,17 +37,25 @@ function readStorageKeyFor(source) {
   return `${READ_STORAGE_PREFIX}${slugifyTitle(source.title)}_${source.year}`;
 }
 
+function interestingStorageKeyFor(source) {
+  return `${INTERESTING_STORAGE_PREFIX}${slugifyTitle(source.title)}_${source.year}`;
+}
+
 function isSourceRead(source) {
   return localStorage.getItem(readStorageKeyFor(source)) === "1";
 }
 
-function setSourceRead(readKey, isRead) {
-  if (isRead) {
-    localStorage.setItem(readKey, "1");
+function isSourceInteresting(source) {
+  return localStorage.getItem(interestingStorageKeyFor(source)) === "1";
+}
+
+function setLocalStorageFlag(storageKey, isActive) {
+  if (isActive) {
+    localStorage.setItem(storageKey, "1");
     return;
   }
 
-  localStorage.removeItem(readKey);
+  localStorage.removeItem(storageKey);
 }
 
 async function fetchJson(url, expectedName) {
@@ -91,25 +100,47 @@ function sourceCard(source, globalIndex) {
     .join("");
 
   const readKey = readStorageKeyFor(source);
-  const checked = isSourceRead(source) ? "checked" : "";
-  const readClass = checked ? " is-read" : "";
+  const interestingKey = interestingStorageKeyFor(source);
+  const isRead = isSourceRead(source);
+  const isInteresting = isSourceInteresting(source);
+
+  const checkedRead = isRead ? "checked" : "";
+  const checkedInteresting = isInteresting ? "checked" : "";
+  const stateClasses = [
+    isRead ? "is-read" : "",
+    isInteresting ? "is-interesting" : ""
+  ].filter(Boolean).join(" ");
 
   return `
-    <article class="reading-item${readClass}" data-read-key="${escapeHtml(readKey)}">
+    <article class="reading-item ${stateClasses}" data-read-key="${escapeHtml(readKey)}" data-interesting-key="${escapeHtml(interestingKey)}">
       <div class="reading-index">${globalIndex}</div>
       <div class="item-content">
         <div class="item-title-row">
           <h3>${escapeHtml(source.title)}</h3>
 
-          <label class="read-check">
-            <input
-              type="checkbox"
-              class="read-checkbox"
-              data-read-key="${escapeHtml(readKey)}"
-              ${checked}
-            >
-            <span>Luettu</span>
-          </label>
+          <div class="status-checks" aria-label="Lukutila ja hyödyllisyysmerkinnät">
+            <label class="state-check read-check">
+              <input
+                type="checkbox"
+                class="state-checkbox read-checkbox"
+                data-storage-key="${escapeHtml(readKey)}"
+                data-state-class="is-read"
+                ${checkedRead}
+              >
+              <span>Luettu</span>
+            </label>
+
+            <label class="state-check interesting-check">
+              <input
+                type="checkbox"
+                class="state-checkbox interesting-checkbox"
+                data-storage-key="${escapeHtml(interestingKey)}"
+                data-state-class="is-interesting"
+                ${checkedInteresting}
+              >
+              <span>Hyödyllinen</span>
+            </label>
+          </div>
         </div>
 
         <div class="meta">
@@ -163,25 +194,40 @@ function renderToc(stages) {
     .join("");
 }
 
-function updateReadProgress() {
-  const checkboxes = Array.from(document.querySelectorAll(".read-checkbox"));
-  const readCount = checkboxes.filter(checkbox => checkbox.checked).length;
-  const totalCount = checkboxes.length;
+function updateProgressCounters() {
+  const readCheckboxes = Array.from(document.querySelectorAll(".read-checkbox"));
+  const interestingCheckboxes = Array.from(document.querySelectorAll(".interesting-checkbox"));
+
+  const readCount = readCheckboxes.filter(checkbox => checkbox.checked).length;
+  const interestingCount = interestingCheckboxes.filter(checkbox => checkbox.checked).length;
+
+  const totalCount = readCheckboxes.length;
 
   const readCountElement = document.querySelector("#readCount");
   const readProgressElement = document.querySelector("#readProgress");
+  const interestingCountElement = document.querySelector("#interestingCount");
+  const interestingProgressElement = document.querySelector("#interestingProgress");
 
   if (readCountElement) {
     readCountElement.textContent = `${readCount}/${totalCount}`;
   }
 
   if (readProgressElement) {
-    const percent = totalCount ? Math.round((readCount / totalCount) * 100) : 0;
-    readProgressElement.textContent = `${percent} % luettu`;
+    const readPercent = totalCount ? Math.round((readCount / totalCount) * 100) : 0;
+    readProgressElement.textContent = `${readPercent} % luettu`;
+  }
+
+  if (interestingCountElement) {
+    interestingCountElement.textContent = `${interestingCount}/${totalCount}`;
+  }
+
+  if (interestingProgressElement) {
+    const interestingPercent = totalCount ? Math.round((interestingCount / totalCount) * 100) : 0;
+    interestingProgressElement.textContent = `${interestingPercent} % hyödyllinen`;
   }
 }
 
-function setupReadCheckboxListener() {
+function setupStateCheckboxListener() {
   const content = document.querySelector("#content");
 
   if (!content) {
@@ -189,22 +235,23 @@ function setupReadCheckboxListener() {
   }
 
   content.addEventListener("change", event => {
-    const checkbox = event.target.closest(".read-checkbox");
+    const checkbox = event.target.closest(".state-checkbox");
 
     if (!checkbox) {
       return;
     }
 
-    const readKey = checkbox.dataset.readKey;
+    const storageKey = checkbox.dataset.storageKey;
+    const stateClass = checkbox.dataset.stateClass;
     const article = checkbox.closest(".reading-item");
 
-    setSourceRead(readKey, checkbox.checked);
+    setLocalStorageFlag(storageKey, checkbox.checked);
 
-    if (article) {
-      article.classList.toggle("is-read", checkbox.checked);
+    if (article && stateClass) {
+      article.classList.toggle(stateClass, checkbox.checked);
     }
 
-    updateReadProgress();
+    updateProgressCounters();
   });
 }
 
@@ -279,7 +326,7 @@ function renderStages(sources, stages) {
     : "";
 
   content.innerHTML = stageHtml + extrasHtml;
-  updateReadProgress();
+  updateProgressCounters();
 }
 
 function showNotice(message) {
@@ -298,7 +345,7 @@ async function init() {
   const sourceCount = document.querySelector("#sourceCount");
   const stageCount = document.querySelector("#stageCount");
 
-  setupReadCheckboxListener();
+  setupStateCheckboxListener();
 
   try {
     const [sources, stages] = await Promise.all([
