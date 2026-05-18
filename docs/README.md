@@ -24,6 +24,15 @@ Suositeltu rakenne:
 .
 ├── README.md
 ├── index.html
+├── preview.html
+├── reading-order.html
+├── css/
+|   ├── index.css
+|   ├── preview.css
+|   └── reading-order.css
+├── js/
+|   ├── preview.js
+|   ├── reading-order.js
 └── pdf/
     ├── a_new_model_of_the_springboard_in_diving_(2004).pdf
     ├── computer_simulation_of_the_takeoff_in_springboard_diving_(2005).pdf
