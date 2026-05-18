@@ -292,7 +292,7 @@
       align-items: center;
       gap: 8px;
       min-height: 40px;
-      padding: 9px 13px;
+      padding: 5px 13px;
       border-radius: 14px;
       text-decoration: none;
       font-weight: 800;
@@ -321,7 +321,7 @@
       display: none;
       margin: 20px 0;
       padding: 18px 20px;
-      border-radius: 18px;
+      border-radius: 10px;
     }
 
     .missing {
