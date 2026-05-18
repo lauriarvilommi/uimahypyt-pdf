@@ -360,7 +360,7 @@
   flex: 0 0 auto;
   min-height: 34px;
   border: 1px solid var(--border);
-  padding: 10px 2px 20px 2px;
+  padding: 2px 2px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.075);
   color: var(--subtle);
@@ -368,10 +368,6 @@
   font-weight: 800;
   cursor: pointer;
   user-select: none;
-}
-
-label.read-check {
-    margin-bottom: 10px;
 }
 
 .read-check input {
