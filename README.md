@@ -26,7 +26,7 @@ Suositeltu rakenne:
     ├── README.md
     ├── index.html
     ├── preview.html
-    ├── reding-order.html
+    ├── reading-order.html
     ├── css/
     |   ├── index.css
     |   ├── preview.css
