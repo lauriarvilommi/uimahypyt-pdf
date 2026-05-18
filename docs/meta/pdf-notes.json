@@ -4,5 +4,11 @@
     "whyUseful": "Tutkimuksessa havaitiin, että lähtöhetken lonkan ja polven kulmat suurempia taitavilla kuin taitamattomilla.",
     "followUp": "Tutkimus lainattavaksi ja liitettäväksi raporttiin.",
     "tags": ["Nivelkulmat taitavilla", "Nivelkulmat taitamattomilla", "lonkan kulma", "polvikulma"]
-  }
+  },
+  "parameter_determination_for_a_computer_simulation_model_of_a_diver_and_a_springboard_(1999).pdf": {
+    "note": "Wobbling mass -karkaistuksella mallinnetulla ihmisellä tehty simulaatio eroaa empiriasta 31%.",
+    "whyUseful": "",
+    "followUp": "Jos löytyy yksityiskohtaisempi tapa parameterisoida mallia, tämä kenties hyödyllinen.",
+    "tags": ["Ponnahduslauta", "Wobbling mass", "simulaatio", "malli"]
+  },
 }
