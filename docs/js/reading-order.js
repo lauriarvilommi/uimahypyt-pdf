@@ -1,5 +1,6 @@
 const SOURCES_URL = "./meta/sources.json";
 const STAGES_URL = "./meta/stages.json";
+const PDF_NOTES_URL = "./meta/pdf-notes.json";
 const PDF_ROOT = "./pdf/";
 const READ_STORAGE_PREFIX = "divingSourcesRead:";
 const INTERESTING_STORAGE_PREFIX = "divingSourcesInteresting:";
@@ -93,7 +94,140 @@ async function getStages() {
   return stages;
 }
 
-function sourceCard(source, globalIndex) {
+async function getPdfNotes() {
+  try {
+    const response = await fetch(PDF_NOTES_URL);
+
+    // pdf-notes.json on vapaaehtoinen tiedosto.
+    // Jos sitä ei vielä ole, sivu toimii normaalisti ilman muistiinpanoja.
+    if (response.status === 404) {
+      return {};
+    }
+
+    if (!response.ok) {
+      throw new Error(`pdf-notes.json lataus epäonnistui. HTTP-status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return normalizePdfNotes(result);
+  } catch (error) {
+    console.warn(error);
+    return {};
+  }
+}
+
+function normalizePdfNotes(result) {
+  // Hyväksyy kolme muotoa:
+  // 1) { "tiedostonimi.pdf": { ... } }
+  // 2) [ { "fileName": "tiedostonimi.pdf", ... } ]
+  // 3) { "notes": [ { "title": "...", "year": 2021, ... } ] }
+
+  if (!result) {
+    return {};
+  }
+
+  const notesArray = Array.isArray(result)
+    ? result
+    : Array.isArray(result.notes)
+      ? result.notes
+      : null;
+
+  if (notesArray) {
+    return notesArray.reduce((notesByKey, note) => {
+      const fileName = note.fileName || note.filename || note.pdf || note.file;
+
+      if (fileName) {
+        notesByKey[fileName] = note;
+        return notesByKey;
+      }
+
+      if (note.title && note.year) {
+        const generatedFileName = `${slugifyTitle(note.title)}_(${note.year}).pdf`;
+        notesByKey[generatedFileName] = note;
+      }
+
+      return notesByKey;
+    }, {});
+  }
+
+  if (typeof result === "object") {
+    return result;
+  }
+
+  return {};
+}
+
+function noteForSource(source, pdfNotes) {
+  const fileName = fileNameFor(source);
+  const slug = slugifyTitle(source.title);
+
+  return pdfNotes[fileName]
+    || pdfNotes[source.title]
+    || pdfNotes[slug]
+    || null;
+}
+
+function renderPdfNote(note) {
+  if (!note) {
+    return "";
+  }
+
+  if (typeof note === "string") {
+    return `
+      <aside class="pdf-note">
+        <h4>Oma huomio</h4>
+        <p>${escapeHtml(note)}</p>
+      </aside>
+    `;
+  }
+
+  const noteText = note.note || note.notes || note.summary || note.comment || "";
+  const whyUseful = note.whyUseful || note.why_useful || note.usefulReason || note.reason || "";
+  const followUp = note.followUp || note.follow_up || note.revisit || "";
+  const noteTags = Array.isArray(note.tags) ? note.tags : [];
+
+  const tagsHtml = noteTags.length
+    ? `<div class="pdf-note-tags">${noteTags.map(tag => `<span class="note-tag">${escapeHtml(tag)}</span>`).join("")}</div>`
+    : "";
+
+  const noteTextHtml = noteText
+    ? `<p>${escapeHtml(noteText)}</p>`
+    : "";
+
+  const whyUsefulHtml = whyUseful
+    ? `
+      <div class="useful-reason">
+        <strong>Miksi hyödyllinen:</strong>
+        <span>${escapeHtml(whyUseful)}</span>
+      </div>
+    `
+    : "";
+
+  const followUpHtml = followUp
+    ? `
+      <div class="follow-up-note">
+        <strong>Palaa tähän kun:</strong>
+        <span>${escapeHtml(followUp)}</span>
+      </div>
+    `
+    : "";
+
+  if (!noteTextHtml && !whyUsefulHtml && !followUpHtml && !tagsHtml) {
+    return "";
+  }
+
+  return `
+    <aside class="pdf-note">
+      <h4>Oma huomio</h4>
+      ${noteTextHtml}
+      ${whyUsefulHtml}
+      ${followUpHtml}
+      ${tagsHtml}
+    </aside>
+  `;
+}
+
+function sourceCard(source, globalIndex, note = null) {
   const tags = Array.isArray(source.tags) ? source.tags : [];
   const tagHtml = tags
     .map(tag => `<span class="tag">${escapeHtml(tag)}</span>`)
@@ -108,7 +242,8 @@ function sourceCard(source, globalIndex) {
   const checkedInteresting = isInteresting ? "checked" : "";
   const stateClasses = [
     isRead ? "is-read" : "",
-    isInteresting ? "is-interesting" : ""
+    isInteresting ? "is-interesting" : "",
+    note ? "has-pdf-note" : ""
   ].filter(Boolean).join(" ");
 
   return `
@@ -150,6 +285,8 @@ function sourceCard(source, globalIndex) {
         </div>
 
         <p class="summary">${escapeHtml(source.summary)}</p>
+
+        ${renderPdfNote(note)}
 
         <div class="actions">
           <a class="button primary" href="${localPdfHref(source)}" target="_blank" rel="noopener noreferrer">Avaa PDF</a>
@@ -255,7 +392,7 @@ function setupStateCheckboxListener() {
   });
 }
 
-function renderStages(sources, stages) {
+function renderStages(sources, stages, pdfNotes) {
   const content = document.querySelector("#content");
 
   if (!content) {
@@ -281,7 +418,7 @@ function renderStages(sources, stages) {
       }
 
       usedTitles.add(title);
-      return sourceCard(source, globalIndex++);
+      return sourceCard(source, globalIndex++, noteForSource(source, pdfNotes));
     }).join("");
 
     return `
@@ -319,7 +456,7 @@ function renderStages(sources, stages) {
         </header>
 
         <div class="items">
-          ${unusedSources.map(source => sourceCard(source, globalIndex++)).join("")}
+          ${unusedSources.map(source => sourceCard(source, globalIndex++, noteForSource(source, pdfNotes))).join("")}
         </div>
       </section>
     `
@@ -348,9 +485,10 @@ async function init() {
   setupStateCheckboxListener();
 
   try {
-    const [sources, stages] = await Promise.all([
+    const [sources, stages, pdfNotes] = await Promise.all([
       getSources(),
-      getStages()
+      getStages(),
+      getPdfNotes()
     ]);
 
     if (sourceCount) {
@@ -362,7 +500,7 @@ async function init() {
     }
 
     renderToc(stages);
-    renderStages(sources, stages);
+    renderStages(sources, stages, pdfNotes);
   } catch (error) {
     console.error(error);
 
